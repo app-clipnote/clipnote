@@ -2,6 +2,7 @@
   "name": "ClipNote",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://app-clipnote.github.io/clipnote/",
   "type": "module",
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",
@@ -60,10 +61,13 @@
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.7.0",
     "tailwindcss": "4.1.12",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "gh-pages": "^6.3.0"
   },
   "scripts": {
     "dev": "vite",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "vite build"
   }
 }

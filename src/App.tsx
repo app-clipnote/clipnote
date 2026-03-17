@@ -142,7 +142,7 @@ function App() {
         isAdmin,
       }}
     >
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
           <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
