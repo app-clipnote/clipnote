@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, Mail, Lock, User, ArrowLeft, AlertCircle } from 'lucide-react';
 import { useApp } from '../../../App';
 import { signIn, signUp } from '../../../lib/auth';
+import logoIcon from '../../../assets/logoicon.png';
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -53,10 +54,10 @@ export function AuthPage() {
 
         {/* Logo/Header */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden">
+            <img src={logoIcon} alt="ClipNote Logo" className="w-full h-full object-cover" />
           </div>
-          <span className="text-2xl font-bold tracking-tight">ClipName AI</span>
+          <span className="text-2xl font-bold tracking-tight">ClipNote AI</span>
         </div>
 
         {/* Testimonial/Quote */}
@@ -84,10 +85,10 @@ export function AuthPage() {
         {/* Mobile Header (Only visible on small screens) */}
         <div className="md:hidden w-full flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center overflow-hidden">
+              <img src={logoIcon} alt="ClipNote Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl font-bold tracking-tight">ClipName</span>
+            <span className="text-xl font-bold tracking-tight">ClipNote</span>
           </div>
           <button onClick={() => navigate('/')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
             <ArrowLeft className="w-4 h-4" /> Home
@@ -110,7 +111,7 @@ export function AuthPage() {
             <p className="text-muted-foreground font-medium">
               {isLogin 
                 ? 'Enter your details to access your dashboard.' 
-                : 'Join ClipName to start summarizing hours of content instantly.'}
+                : 'Join ClipNote to start summarizing hours of content instantly.'}
             </p>
           </div>
 
@@ -227,7 +228,7 @@ export function AuthPage() {
 
           {!isLogin && (
             <p className="mt-8 text-[11px] text-center text-muted-foreground/80 max-w-xs mx-auto leading-relaxed">
-              By continuing, you agree to ClipName's{' '}
+              By continuing, you agree to ClipNote's{' '}
               <a href="#" className="underline hover:text-foreground">Terms of Service</a> and{' '}
               <a href="#" className="underline hover:text-foreground">Privacy Policy</a>
             </p>
