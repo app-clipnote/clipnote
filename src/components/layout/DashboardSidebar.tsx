@@ -15,7 +15,7 @@ import {
 import { useApp } from '../../App';
 import { signOut } from '../../lib/auth';
 import { ThemeToggle } from '../shared/ThemeToggle';
-import logoImage from 'figma:asset/93280cfc232010059111a5f16ed394e8480e436c.png';
+import logoImage from '../../assets/logoicon.png';
 
 interface DashboardSidebarProps {
   selectedSummaryId: string | null;
@@ -69,8 +69,8 @@ export function DashboardSidebar({ selectedSummaryId, onSelectSummary, onShowSet
       {/* Header */}
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3 mb-4">
-          <img src={logoImage} alt="ClipName Logo" className="w-8 h-8 object-contain" />
-          <span className="text-lg font-semibold">ClipName</span>
+          <img src={logoImage} alt="ClipNote Logo" className="w-8 h-8 object-contain" />
+          <span className="text-lg font-semibold">ClipNote</span>
         </div>
 
         <button
