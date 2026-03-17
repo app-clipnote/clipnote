@@ -1,0 +1,164 @@
+import { useState, createContext, useContext, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { LandingPage } from './features/landing/components/LandingPage';
+import { AuthPage } from './features/auth/components/AuthPage';
+import { OnboardingFlow } from './features/onboarding/components/OnboardingFlow';
+import { Dashboard } from './pages/Dashboard';
+import { AdminAuth } from './features/admin/components/AdminAuth';
+import { AdminDashboard } from './features/admin/components/AdminDashboard';
+import { getProfile, getAuthUser } from './lib/auth';
+import { getSummaries } from './lib/summaries';
+import { getCurrentUserId } from './lib/local-storage';
+import { initializeTheme } from './lib/theme';
+import type { Summary } from './types';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  plan: 'free' | 'pro' | 'enterprise';
+}
+
+interface AppContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  summaries: Summary[];
+  setSummaries: (summaries: Summary[]) => void;
+  refreshSummaries: () => Promise<void>;
+  reloadUser: () => Promise<void>;
+  needsOnboarding: boolean;
+  setNeedsOnboarding: (needs: boolean) => void;
+  loading: boolean;
+  isAdmin: boolean;
+}
+
+const AppContext = createContext<AppContextType | null>(null);
+
+export const useApp = () => {
+  const context = useContext(AppContext);
+  if (!context) throw new Error('useApp must be used within AppProvider');
+  return context;
+};
+
+function App() {
+  const [user, setUser] = useState<User | null>(null);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+  const [summaries, setSummaries] = useState<Summary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Check for admin session
+    const adminSession = localStorage.getItem('admin_session');
+    if (adminSession === 'true') {
+      setIsAdmin(true);
+    }
+    
+    // Initialize theme
+    initializeTheme();
+  }, []);
+
+  const refreshSummaries = async () => {
+    if (user) {
+      try {
+        const data = await getSummaries(user.id);
+        setSummaries(data);
+      } catch (error) {
+        console.error('Error loading summaries:', error);
+      }
+    }
+  };
+
+  const reloadUser = async () => {
+    const userId = getCurrentUserId();
+    if (userId) {
+      await loadUserData(userId);
+    }
+  };
+
+  useEffect(() => {
+    // Check for existing session in localStorage
+    const initAuth = async () => {
+      try {
+        const userId = getCurrentUserId();
+        
+        if (userId) {
+          await loadUserData(userId);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Init auth error:', error);
+        setLoading(false);
+      }
+    };
+
+    initAuth();
+  }, []);
+
+  const loadUserData = async (userId: string) => {
+    try {
+      const profile = await getProfile(userId);
+      setUser({
+        id: profile.id,
+        email: profile.email,
+        name: profile.name,
+        plan: profile.plan,
+      });
+
+      // Load summaries
+      const summariesData = await getSummaries(userId);
+      setSummaries(summariesData);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <AppContext.Provider
+      value={{
+        user,
+        setUser,
+        summaries,
+        setSummaries,
+        refreshSummaries,
+        reloadUser,
+        needsOnboarding,
+        setNeedsOnboarding,
+        loading,
+        isAdmin,
+      }}
+    >
+      <Router>
+        <Routes>
+          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
+          <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
+          <Route
+            path="/onboarding"
+            element={
+              user && needsOnboarding ? <OnboardingFlow /> : <Navigate to={user ? '/dashboard' : '/auth'} />
+            }
+          />
+          <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
+          <Route path="/admin/auth" element={isAdmin ? <Navigate to="/admin/dashboard" /> : <AdminAuth />} />
+          <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
+        </Routes>
+      </Router>
+    </AppContext.Provider>
+  );
+}
+
+export default App;
