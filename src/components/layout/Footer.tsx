@@ -1,3 +1,5 @@
+import logoImage from '../../assets/logoicon.png';
+
 export function Footer() {
   return (
     <footer className="w-full">
@@ -19,7 +21,7 @@ export function Footer() {
               placeholder="Enter your email" 
               className="bg-transparent border-none outline-none px-6 py-2 text-white w-full placeholder:text-white/20"
             />
-            <button className="bg-[#059669] hover:bg-[#047857] text-white px-8 py-3 rounded-full font-bold transition-all whitespace-nowrap">
+            <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full font-bold transition-all whitespace-nowrap">
               Subscribe
             </button>
           </div>
@@ -31,14 +33,8 @@ export function Footer() {
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 max-w-7xl mx-auto">
           <div className="md:col-span-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex flex-col gap-0.5">
-                <div className="flex gap-1">
-                  <div className="w-1.5 h-6 bg-[#059669] rounded-full rotate-[15deg]" />
-                  <div className="w-1.5 h-6 bg-[#059669] rounded-full rotate-[15deg]" />
-                  <div className="w-1.5 h-6 bg-[#059669] rounded-full rotate-[15deg]" />
-                </div>
-              </div>
-              <span className="text-3xl font-bold tracking-tight">ClipName</span>
+              <img src={logoImage} alt="ClipNote Logo" className="w-8 h-8 object-contain" />
+              <span className="text-3xl font-bold tracking-tight">ClipNote</span>
             </div>
             <p className="text-white/40 max-w-xs leading-relaxed">
               Make your complicated content<br />
@@ -77,7 +73,7 @@ export function Footer() {
         {/* Large Watermark Background Text */}
         <div className="absolute bottom-[-10%] left-0 w-full flex justify-center pointer-events-none select-none overflow-hidden">
           <span className="text-[25vw] font-bold text-white/[0.03] tracking-tighter leading-none">
-            ClipName
+            ClipNote
           </span>
         </div>
       </div>
