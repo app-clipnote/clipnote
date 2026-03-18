@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   Sparkles, 
   Plus, 
@@ -133,13 +133,13 @@ export function DashboardSidebar({ selectedSummaryId, onSelectSummary, onShowSet
 
       {/* User Menu */}
       <div className="border-t border-sidebar-border p-4 space-y-3">
-        <button
-          onClick={() => navigate('/')}
+        <Link
+          to="/"
           className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors mb-2"
         >
           <Globe className="w-5 h-5" />
           <span className="text-sm font-medium">Back to Website</span>
-        </button>
+        </Link>
 
         <div className="flex items-center justify-between px-3">
           <span className="text-sm text-muted-foreground">Theme</span>

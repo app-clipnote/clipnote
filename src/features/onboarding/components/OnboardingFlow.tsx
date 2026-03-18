@@ -77,7 +77,7 @@ export function OnboardingFlow() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border bg-white/80 backdrop-blur-sm">
+      <header className="border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -113,7 +113,7 @@ export function OnboardingFlow() {
               </p>
             </div>
 
-            <div className="bg-white border border-border rounded-2xl p-8">
+            <div className="bg-card border border-border rounded-2xl p-8">
               <h2 className="text-2xl font-semibold mb-6">What can you do with Summarize AI?</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
@@ -182,8 +182,8 @@ export function OnboardingFlow() {
                   onClick={() => setSelectedPlan(plan.id)}
                   className={`relative text-left p-8 rounded-2xl border-2 transition-all ${
                     selectedPlan === plan.id
-                      ? 'border-primary bg-accent'
-                      : 'border-border bg-white hover:border-primary/50'
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border bg-card hover:border-primary/50'
                   }`}
                 >
                   {plan.popular && (
@@ -222,7 +222,7 @@ export function OnboardingFlow() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-border bg-white">
+      <div className="border-t border-border bg-background">
         <div className="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between">
           {step > 1 && (
             <button
@@ -235,7 +235,7 @@ export function OnboardingFlow() {
           {step === 1 && <div />}
           <button
             onClick={handleContinue}
-            className="ml-auto bg-primary text-white px-8 py-3 rounded-xl hover:bg-primary/90 transition-colors flex items-center gap-2"
+            className="ml-auto bg-primary text-primary-foreground px-8 py-3 rounded-xl hover:bg-primary/90 transition-colors flex items-center gap-2"
           >
             {step === 2 ? 'Get started' : 'Continue'}
             <ArrowRight className="w-5 h-5" />

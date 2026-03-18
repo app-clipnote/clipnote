@@ -146,7 +146,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://youtube.com/watch?v=..."
-                  className="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-2xl outline-none focus:border-primary transition-colors text-base"
+                  className="w-full pl-12 pr-4 py-4 bg-secondary/20 border border-border rounded-2xl outline-none focus:border-primary transition-colors text-base"
                   disabled={isProcessing}
                 />
               </div>
@@ -171,7 +171,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
             </form>
 
             <div className="grid grid-cols-3 gap-4 mt-8">
-              <div className="bg-white border border-border rounded-xl p-6 text-center">
+              <div className="bg-card border border-border rounded-xl p-6 text-center">
                 <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center mx-auto mb-3">
                   <Play className="w-6 h-6 text-primary" />
                 </div>
@@ -179,7 +179,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                 <p className="text-sm text-muted-foreground">Summarize videos</p>
               </div>
 
-              <div className="bg-white border border-border rounded-xl p-6 text-center">
+              <div className="bg-card border border-border rounded-xl p-6 text-center">
                 <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center mx-auto mb-3">
                   <FileAudio className="w-6 h-6 text-primary" />
                 </div>
@@ -187,7 +187,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                 <p className="text-sm text-muted-foreground">Convert to text</p>
               </div>
 
-              <div className="bg-white border border-border rounded-xl p-6 text-center">
+              <div className="bg-card border border-border rounded-xl p-6 text-center">
                 <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center mx-auto mb-3">
                   <Link2 className="w-6 h-6 text-primary" />
                 </div>
@@ -200,7 +200,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
       ) : (
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="border-b border-border bg-white px-8 py-6">
+          <div className="border-b border-border bg-card px-8 py-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
                 <h1 className="text-2xl font-semibold mb-2">{selectedSummary.title}</h1>
@@ -244,7 +244,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                 </button>
                 <button
                   onClick={onShowExport}
-                  className="px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2"
                 >
                   <Download className="w-5 h-5" />
                   Export
@@ -256,7 +256,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
           {/* Summary Content */}
           <div className="flex-1 overflow-y-auto p-8">
             <div className="max-w-3xl mx-auto">
-              <div className="bg-white border border-border rounded-2xl p-8">
+              <div className="bg-card border border-border rounded-2xl p-8">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
                   <Sparkles className="w-4 h-4 text-primary" />
                   <span>AI-generated summary</span>

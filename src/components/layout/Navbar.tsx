@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ThemeToggle } from '../shared/ThemeToggle';
 import { useApp } from '../../App';
 import logoImage from '../../assets/logoicon.png';
@@ -84,43 +85,63 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div className="lg:hidden absolute top-full left-3 right-3 sm:left-6 sm:right-6 mt-4 bg-background/95 backdrop-blur-xl rounded-[2rem] border border-border/50 shadow-2xl p-6 sm:p-8 animate-in slide-in-from-top-4 duration-300 overflow-hidden">
-          <div className="flex flex-col gap-6">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-lg font-semibold text-foreground hover:text-primary transition-colors py-2 border-b border-border/30"
-                onClick={() => setIsOpen(false)}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="lg:hidden absolute top-full left-3 right-3 sm:left-6 sm:right-6 mt-4 bg-background/95 backdrop-blur-xl rounded-[2rem] border border-border/50 shadow-2xl p-6 sm:p-8 overflow-hidden"
+          >
+            <div className="flex flex-col gap-6">
+              {navLinks.map((link, idx) => (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + idx * 0.05 }}
+                  className="text-lg font-semibold text-foreground hover:text-primary transition-colors py-2 border-b border-border/30"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.name}
+                </motion.a>
+              ))}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center justify-between pt-4"
               >
-                {link.name}
-              </a>
-            ))}
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-sm font-medium text-muted-foreground">Appearance</span>
-              <ThemeToggle variant="minimal" />
+                <span className="text-sm font-medium text-muted-foreground">Appearance</span>
+                <ThemeToggle variant="minimal" />
+              </motion.div>
+              {!user && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="flex flex-col gap-4 mt-6"
+                >
+                  <button
+                    onClick={() => { navigate('/auth'); setIsOpen(false); }}
+                    className="w-full py-4 text-center font-bold text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Log In
+                  </button>
+                  <button
+                    onClick={() => { navigate('/auth'); setIsOpen(false); }}
+                    className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold transition-all shadow-lg active:scale-95"
+                  >
+                    Get Started Free
+                  </button>
+                </motion.div>
+              )}
             </div>
-            {!user && (
-              <div className="flex flex-col gap-4 mt-6">
-                <button
-                  onClick={() => { navigate('/auth'); setIsOpen(false); }}
-                  className="w-full py-4 text-center font-bold text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Log In
-                </button>
-                <button
-                  onClick={() => { navigate('/auth'); setIsOpen(false); }}
-                  className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold transition-all shadow-lg active:scale-95"
-                >
-                  Get Started Free
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
