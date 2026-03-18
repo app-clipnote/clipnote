@@ -30,7 +30,7 @@ export function Footer() {
         <div className="w-full h-px bg-white/10 mb-20 relative z-10" />
 
         {/* Navigation Section */}
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 max-w-7xl mx-auto">
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 max-w-7xl mx-auto mb-[220px]">
           <div className="md:col-span-6">
             <div className="flex items-center gap-3 mb-6">
               <img src={logoImage} alt="ClipNote Logo" className="w-8 h-8 object-contain" />

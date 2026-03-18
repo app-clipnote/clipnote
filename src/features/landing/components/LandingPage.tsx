@@ -17,6 +17,8 @@ import {
   Mic,
   Video,
   FileText,
+  ArrowUp,
+  ArrowDown,
   Sparkles,
   Star,
   Quote
@@ -27,6 +29,7 @@ import { useApp } from '../../../App';
 import { ImageWithFallback } from '../../../components/figma/ImageWithFallback';
 import { Navbar } from '../../../components/layout/Navbar';
 import { Footer } from '../../../components/layout/Footer';
+import looperGroup from '../../../assets/LooperGroup.svg';
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -35,25 +38,53 @@ export function LandingPage() {
   const [activeSource, setActiveSource] = useState('YouTube');
   const [activeLength, setActiveLength] = useState('Detailed');
   const [summaryMode, setSummaryMode] = useState('Balanced');
+  const [activeFaqCategory, setActiveFaqCategory] = useState('Subscription');
+  const faqCategories = ['Account Support', 'Subscription', 'For Creators', 'Payment'];
 
   const faqs = [
     {
-      question: "How accurate are the AI summaries?",
-      answer: "Our AI uses advanced semantic analysis and the latest LLM models to provide summaries with 99.9% accuracy, capturing context and nuances that simpler tools often miss."
+      category: "Account Support",
+      question: "How do I reset my password?",
+      answer: "You can reset your password by clicking on 'Forgot Password' in the login screen. We will send you a secure link to your registered email address."
     },
     {
-      question: "Can I summarize long YouTube videos?",
-      answer: "Yes! ClipNote can process videos of any length, from short 2-minute clips to 3-hour long podcasts and lectures."
+      category: "Account Support",
+      question: "Can I use ClipNote on multiple devices?",
+      answer: "Yes, your account can be accessed from any device. Your summaries and history are synced across all platforms automatically."
     },
     {
-      question: "What file formats do you support?",
-      answer: "We support YouTube URLs, MP3, WAV, and MP4 audio/video files, as well as PDF and DOCX documents."
+      category: "Subscription",
+      question: "Do you need Credit card for 14-Day Trial?",
+      answer: "Absolutely not! You can start your 14-day pro trial without entering any payment information."
     },
     {
-      question: "Is my data secure?",
-      answer: "Absolutely. We use local-first storage and industry-standard encryption. Your files and summaries are private and never shared."
+      category: "Subscription",
+      question: "What happens if i want to cancel my subscription?",
+      answer: "You still pay for the remainder of the time for the plan you signed up for. Your access remains active until the end of the billing period."
+    },
+    {
+      category: "For Creators",
+      question: "Is there a limit on video length for summaries?",
+      answer: "Pro users can summarize videos up to 4 hours long. Free users are limited to 15 minutes per video."
+    },
+    {
+      category: "For Creators",
+      question: "Can I export summaries to PDF or Notion?",
+      answer: "Yes! You can export your summaries to multiple formats including PDF, TXT, and direct sync to Notion (for Enterprise users)."
+    },
+    {
+      category: "Payment",
+      question: "Can I Purchase Courses from outside the US?",
+      answer: "Yes, our payment processor supports international cards and various digital wallets from almost every country."
+    },
+    {
+      category: "Payment",
+      question: "Possible to upgrade my plan even after signing up?",
+      answer: "Absolutely! You can upgrade your plan at any time from your account settings. The price will be prorated based on your current cycle."
     }
   ];
+
+  const filteredFaqs = faqs.filter(faq => faq.category === activeFaqCategory);
 
   const testimonials = [
     {
@@ -99,8 +130,14 @@ export function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center">
-        {/* Subtle Background Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none -z-10" />
+        {/* Looper Group Background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] h-full pointer-events-none -z-10 overflow-hidden">
+          <img 
+            src={looperGroup} 
+            alt="" 
+            className="w-full h-auto object-cover opacity-60 dark:opacity-40" 
+          />
+        </div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -411,29 +448,76 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section id="faq" className="max-w-3xl mx-auto px-6 py-32">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Common <span className="font-dancing text-primary text-5xl md:text-6xl px-1">Questions</span>
-          </h2>
-          <p className="text-muted-foreground font-medium">Everything you need to know about the product and billing.</p>
+      {/* FAQ Section - Redesigned based on Image */}
+      <section id="faq" className="pb-32">
+        {/* FAQ Hero Header */}
+        <div className="relative w-full min-h-[400px] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+          <div className="absolute inset-0 z-0 bg-[#0a0c10]">
+            <img 
+              src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2670&auto=format&fit=crop" 
+              alt="City skyline" 
+              className="w-full h-full object-cover opacity-40 mix-blend-luminosity" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-[#0a0c10]"></div>
+          </div>
+
+          <div className="relative z-10 max-w-3xl">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">How can we help You?</h2>
+            <p className="text-white/70 text-lg font-medium leading-relaxed">
+              Welcome to our Frequently Asked Questions Center, find answers and useful tips to assist you in getting the most out of our platform
+            </p>
+          </div>
         </div>
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <details key={index} className="group bg-card text-card-foreground border border-border/60 rounded-2xl p-6 hover:shadow-md transition-all shadow-sm">
-              <summary className="flex items-center justify-between cursor-pointer list-none font-bold text-lg outline-none">
-                {faq.question}
-                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center group-open:bg-primary group-open:text-primary-foreground transition-all shrink-0 ml-4">
-                  <Plus className="w-4 h-4 group-open:hidden" />
-                  <Minus className="w-4 h-4 hidden group-open:block" />
-                </div>
-              </summary>
-              <div className="mt-6 text-muted-foreground font-medium leading-relaxed pr-12 border-t border-border/50 pt-4">
-                {faq.answer}
-              </div>
-            </details>
-          ))}
+
+        {/* FAQ Content Area */}
+        <div className="max-w-4xl mx-auto px-6 -mt-12 relative z-20">
+          {/* Category Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+            {faqCategories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveFaqCategory(category)}
+                className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg ${
+                  activeFaqCategory === category
+                    ? 'bg-white text-black'
+                    : 'bg-[#1a1c20] text-white/60 hover:text-white hover:bg-[#25282e]'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          {/* FAQ Accordions */}
+          <div className="space-y-4">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeFaqCategory}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-4"
+              >
+                {filteredFaqs.map((faq, index) => (
+                  <details 
+                    key={index} 
+                    className="group bg-[#1a1c20] text-white border border-white/5 rounded-2xl p-6 transition-all hover:bg-[#1f2126]"
+                  >
+                    <summary className="flex items-center justify-between cursor-pointer list-none font-bold text-lg outline-none">
+                      {faq.question}
+                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-open:bg-white group-open:text-black transition-all shrink-0 ml-4 border border-white/10">
+                        <ArrowDown className="w-5 h-5 group-open:hidden" />
+                        <ArrowUp className="w-5 h-5 hidden group-open:block" />
+                      </div>
+                    </summary>
+                    <div className="mt-6 text-white/60 font-medium leading-relaxed pr-12 border-t border-white/10 pt-4">
+                      {faq.answer}
+                    </div>
+                  </details>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </section>
 
