@@ -18,7 +18,7 @@ export function Navbar() {
   ];
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-6">
+    <div className="fixed top-3 sm:top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-3 sm:px-6">
       <header className="bg-background/80 backdrop-blur-md rounded-full border border-border/50 shadow-lg px-8 py-1.5 transition-all">
         <div className="flex items-center justify-between">
           <div 
@@ -86,7 +86,7 @@ export function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div className="lg:hidden absolute top-full left-6 right-6 mt-4 bg-background/95 backdrop-blur-xl rounded-[2rem] border border-border/50 shadow-2xl p-8 animate-in slide-in-from-top-4 duration-300 overflow-hidden">
+        <div className="lg:hidden absolute top-full left-3 right-3 sm:left-6 sm:right-6 mt-4 bg-background/95 backdrop-blur-xl rounded-[2rem] border border-border/50 shadow-2xl p-6 sm:p-8 animate-in slide-in-from-top-4 duration-300 overflow-hidden">
           <div className="flex flex-col gap-6">
             {navLinks.map((link) => (
               <a

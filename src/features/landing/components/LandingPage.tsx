@@ -17,7 +17,9 @@ import {
   Mic,
   Video,
   FileText,
-  Sparkles
+  Sparkles,
+  Star,
+  Quote
 } from 'lucide-react';
 import logoImage from 'figma:asset/93280cfc232010059111a5f16ed394e8480e436c.png';
 import { ThemeToggle } from '../../../components/shared/ThemeToggle';
@@ -41,7 +43,7 @@ export function LandingPage() {
     },
     {
       question: "Can I summarize long YouTube videos?",
-      answer: "Yes! ClipName can process videos of any length, from short 2-minute clips to 3-hour long podcasts and lectures."
+      answer: "Yes! ClipNote can process videos of any length, from short 2-minute clips to 3-hour long podcasts and lectures."
     },
     {
       question: "What file formats do you support?",
@@ -65,7 +67,7 @@ export function LandingPage() {
       name: "Emily Thompson",
       email: "emily.t@gmail.com",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&auto=format&fit=crop",
-      quote: "I've been using ClipName for a few weeks now, and I'm genuinely impressed. It saves me hours every single day.",
+      quote: "I've been using ClipNote for a few weeks now, and I'm genuinely impressed. It saves me hours every single day.",
       rating: 5.0
     },
     {
@@ -106,7 +108,7 @@ export function LandingPage() {
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/80 border border-border/50 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-8 shadow-sm backdrop-blur-sm"
         >
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          ClipName AI Engine 2026
+          ClipNote AI Engine 2026
         </motion.div>
         
         <motion.h1 
@@ -334,7 +336,11 @@ export function LandingPage() {
                           <div className="flex items-center gap-1 text-primary bg-primary/10 px-4 py-2 rounded-full">
                             <span className="font-bold text-sm mr-1">{t.rating}</span>
                             {[...Array(5)].map((_, i) => (
-                              <i key={i} className={`ri-star-${i < Math.floor(t.rating) ? 'fill' : 'half-fill'} text-sm`}></i>
+                              <Star 
+                                key={i} 
+                                className={`w-4 h-4 ${i < Math.floor(t.rating) ? 'fill-primary text-primary' : 'text-primary'}`} 
+                                size={14}
+                              />
                             ))}
                           </div>
                         </div>
