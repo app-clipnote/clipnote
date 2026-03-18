@@ -149,7 +149,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               <div className="max-w-2xl">
                 <h3 className="text-xl font-semibold mb-6">Billing & Subscription</h3>
                 
-                <div className="bg-white border border-border rounded-xl p-6 mb-6">
+                <div className="bg-card border border-border rounded-xl p-6 mb-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h4 className="font-semibold capitalize">{user?.plan} Plan</h4>
@@ -157,7 +157,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                         {user?.plan === 'free' ? 'Free forever' : `$${user?.plan === 'pro' ? '19' : '99'}/month`}
                       </p>
                     </div>
-                    <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                    <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
                       Upgrade Plan
                     </button>
                   </div>
@@ -165,7 +165,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
                 <div className="space-y-4">
                   <h4 className="font-semibold">Payment Method</h4>
-                  <div className="bg-white border border-border rounded-xl p-4 flex items-center justify-between">
+                  <div className="bg-card border border-border rounded-xl p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-8 bg-secondary rounded flex items-center justify-center">
                         <CreditCard className="w-5 h-5" />
@@ -198,7 +198,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                       }`}
                     >
                       <div
-                        className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                        className={`w-5 h-5 bg-card rounded-full shadow-sm transition-transform ${
                           emailNotifications ? 'translate-x-6' : 'translate-x-0.5'
                         }`}
                       />
@@ -211,7 +211,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                       <p className="text-sm text-muted-foreground">Notify when summaries are ready</p>
                     </div>
                     <button className="w-12 h-6 rounded-full bg-primary">
-                      <div className="w-5 h-5 bg-white rounded-full shadow-sm translate-x-6" />
+                      <div className="w-5 h-5 bg-background rounded-full shadow-sm translate-x-6" />
                     </button>
                   </div>
 
@@ -221,7 +221,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                       <p className="text-sm text-muted-foreground">Summary of your activity</p>
                     </div>
                     <button className="w-12 h-6 rounded-full bg-switch-background">
-                      <div className="w-5 h-5 bg-white rounded-full shadow-sm translate-x-0.5" />
+                      <div className="w-5 h-5 bg-background rounded-full shadow-sm translate-x-0.5" />
                     </button>
                   </div>
                 </div>
@@ -233,7 +233,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                 <h3 className="text-xl font-semibold mb-6">Privacy & Security</h3>
                 
                 <div className="space-y-6">
-                  <div className="bg-white border border-border rounded-xl p-6">
+                  <div className="bg-card border border-border rounded-xl p-6">
                     <h4 className="font-semibold mb-2">Data Privacy</h4>
                     <p className="text-sm text-muted-foreground mb-4">
                       Your summaries are encrypted and stored securely. We never share your data with third parties.
@@ -243,7 +243,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                     </button>
                   </div>
 
-                  <div className="bg-white border border-border rounded-xl p-6">
+                  <div className="bg-card border border-border rounded-xl p-6">
                     <h4 className="font-semibold mb-2">Delete Account</h4>
                     <p className="text-sm text-muted-foreground mb-4">
                       Permanently delete your account and all associated data.
@@ -267,16 +267,16 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                       <button
                         onClick={() => setDarkMode(false)}
                         className={`p-4 border-2 rounded-xl transition-colors ${
-                          !darkMode ? 'border-primary bg-accent' : 'border-border bg-white'
+                          !darkMode ? 'border-primary bg-accent' : 'border-border bg-card'
                         }`}
                       >
-                        <div className="w-full h-20 bg-white border border-border rounded-lg mb-3" />
+                        <div className="w-full h-20 bg-background border border-border rounded-lg mb-3" />
                         <p className="text-sm font-medium">Light</p>
                       </button>
                       <button
                         onClick={() => setDarkMode(true)}
                         className={`p-4 border-2 rounded-xl transition-colors ${
-                          darkMode ? 'border-primary bg-accent' : 'border-border bg-white'
+                          darkMode ? 'border-primary bg-accent' : 'border-border bg-card'
                         }`}
                       >
                         <div className="w-full h-20 bg-gray-900 rounded-lg mb-3" />
@@ -300,7 +300,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors"
+            className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors shadow-lg active:scale-95"
             disabled={loading}
           >
             {loading ? 'Saving...' : 'Save Changes'}

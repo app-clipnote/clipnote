@@ -54,7 +54,7 @@ export function AuthPage() {
 
         {/* Logo/Header */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
             <img src={logoIcon} alt="ClipNote Logo" className="w-full h-full object-cover" />
           </div>
           <span className="text-2xl font-bold tracking-tight">ClipNote AI</span>

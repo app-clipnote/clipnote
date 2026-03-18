@@ -152,10 +152,10 @@ export function LandingPage() {
             {/* CTA Button */}
             <div className="w-full sm:w-auto mt-2 sm:mt-0 px-2 sm:px-0 pb-2 sm:pb-0">
               <button 
-                onClick={() => navigate('/auth')}
+                onClick={() => navigate(user ? '/dashboard' : '/auth')}
                 className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-[14px] hover:bg-primary/90 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
               >
-                Summarize <i className="ri-arrow-right-line" />
+                {user ? 'Go to Dashboard' : 'Summarize'} <i className="ri-arrow-right-line" />
               </button>
             </div>
           </div>
@@ -186,7 +186,7 @@ export function LandingPage() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold">Smart Extraction</h3>
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <Brain className="w-5 h-5 text-primary" />
+                  <Sparkles className="w-5 h-5 text-primary" />
                 </div>
               </div>
               <p className="text-muted-foreground text-sm font-medium leading-relaxed">
@@ -220,8 +220,11 @@ export function LandingPage() {
               </p>
             </div>
             <div className="relative z-10 mt-8 md:mt-0">
-              <button onClick={() => navigate('/auth')} className="flex items-center gap-2 font-bold text-sm uppercase tracking-widest hover:gap-4 transition-all">
-                Try it now <ArrowRight className="w-4 h-4" />
+              <button 
+                onClick={() => navigate(user ? '/dashboard' : '/auth')} 
+                className="flex items-center gap-2 font-bold text-sm uppercase tracking-widest hover:gap-4 transition-all"
+              >
+                {user ? 'View Dashboard' : 'Try it now'} <ArrowRight className="w-4 h-4" />
               </button>
             </div>
             <div className="absolute inset-0 opacity-10 pointer-events-none transition-opacity group-hover:opacity-20">
@@ -239,9 +242,13 @@ export function LandingPage() {
                 Don't just read the summary. Ask questions directly to your video or document to find exact timestamps and deeper context.
               </p>
             </div>
-            <div className="w-full md:w-64 h-48 md:h-full bg-secondary/50 rounded-2xl p-4 border border-border rounded-2xl relative overflow-hidden flex items-center justify-center group-hover:bg-secondary transition-colors">
-              <MessageSquare className="w-12 h-12 text-primary/40 group-hover:text-primary transition-colors group-hover:scale-110 duration-500 relative z-10" />
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
+            <div className="w-full md:w-64 h-48 md:h-full bg-secondary/50 rounded-2xl p-4 border border-border rounded-2xl relative overflow-hidden flex items-center justify-center group-hover:bg-secondary transition-colors text-center">
+              <img 
+                src="https://images.unsplash.com/photo-1587560699334-cc4ff634909a?q=80&w=2670&auto=format&fit=crop" 
+                alt="Chat illustration"
+                className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 group-hover:opacity-60 transition-opacity duration-500"
+              />
+              <Sparkles className="w-12 h-12 text-primary/40 group-hover:text-primary transition-colors group-hover:scale-110 duration-500 relative z-10" />
             </div>
           </div>
         </div>
@@ -277,7 +284,7 @@ export function LandingPage() {
             <div className="text-center group">
               <div className="w-28 h-28 mx-auto bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border flex flex-col items-center justify-center mb-8 relative transition-transform duration-500 group-hover:-translate-y-2 md:translate-y-4">
                 <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center shadow-lg shadow-primary/20">2</div>
-                <Brain className="w-10 h-10 text-primary mb-1" />
+                <Sparkles className="w-10 h-10 text-primary mb-1" />
               </div>
               <h3 className="text-xl font-bold mb-3 tracking-tight md:-mt-4">Neural Analysis</h3>
               <p className="text-muted-foreground text-sm font-medium leading-relaxed max-w-[260px] mx-auto z-10">
@@ -369,7 +376,7 @@ export function LandingPage() {
 
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 items-start text-left">
             <div className="md:col-span-8">
-              <h2 className="text-5xl md:text-8xl font-bold text-white leading-tight mb-8 max-w-2xl tracking-tight">
+              <h2 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-8 max-w-2xl tracking-tight">
                 Insights That Work<br />
                 Around You
               </h2>
@@ -394,10 +401,10 @@ export function LandingPage() {
                 HAVE CONTENT IN NEED OF A REFRESH?
               </span>
               <button 
-                onClick={() => navigate('/auth')}
+                onClick={() => navigate(user ? '/dashboard' : '/auth')}
                 className="bg-[#0a0c10] text-white px-10 py-4 rounded-full font-bold text-sm hover:bg-black/80 transition-all shadow-lg hover:scale-105 active:scale-95 whitespace-nowrap"
               >
-                Get Started Now
+                {user ? 'Return to Dashboard' : 'Get Started Now'}
               </button>
             </div>
           </div>

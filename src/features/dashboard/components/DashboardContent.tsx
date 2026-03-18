@@ -14,6 +14,7 @@ import {
 import { useApp } from '../../../App';
 import { createSummary } from '../../../lib/summaries';
 import { ChatInterface } from './ChatInterface';
+import logoImage from '../../../assets/logoicon.png';
 
 interface DashboardContentProps {
   selectedSummaryId: string | null;
@@ -129,8 +130,8 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
         <div className="flex-1 flex flex-col items-center justify-center p-8 overflow-y-auto">
           <div className="w-full max-w-3xl">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-accent rounded-2xl mb-4">
-                <Sparkles className="w-8 h-8 text-primary" />
+              <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
+                <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-3xl font-semibold mb-2">What would you like to summarize?</h1>
               <p className="text-muted-foreground">

@@ -67,7 +67,7 @@ export function Navbar() {
                 </button>
                 <button
                   onClick={() => navigate('/auth')}
-                  className="bg-primary text-primary-foreground text-[12px] font-bold px-7 py-3 rounded-full uppercase tracking-tighter hover:bg-primary/90 transition-all shadow-md active:scale-95"
+                  className="bg-primary text-primary-foreground text-[12px] font-bold px-6 py-3 rounded-full uppercase tracking-tighter hover:bg-primary/90 transition-all shadow-md active:scale-95"
                 >
                   Sign up
                 </button>

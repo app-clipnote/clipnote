@@ -10,6 +10,7 @@ import { getProfile, getAuthUser } from './lib/auth';
 import { getSummaries } from './lib/summaries';
 import { getCurrentUserId } from './lib/local-storage';
 import { initializeTheme } from './lib/theme';
+import { ToastProvider } from './context/ToastContext';
 import type { Summary } from './types';
 
 interface User {
@@ -142,21 +143,23 @@ function App() {
         isAdmin,
       }}
     >
-      <Router basename={import.meta.env.BASE_URL}>
-        <Routes>
-          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
-          <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
-          <Route
-            path="/onboarding"
-            element={
-              user && needsOnboarding ? <OnboardingFlow /> : <Navigate to={user ? '/dashboard' : '/auth'} />
-            }
-          />
-          <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
-          <Route path="/admin/auth" element={isAdmin ? <Navigate to="/admin/dashboard" /> : <AdminAuth />} />
-          <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
-        </Routes>
-      </Router>
+      <ToastProvider>
+        <Router basename={import.meta.env.BASE_URL}>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
+            <Route
+              path="/onboarding"
+              element={
+                user && needsOnboarding ? <OnboardingFlow /> : <Navigate to={user ? '/dashboard' : '/auth'} />
+              }
+            />
+            <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
+            <Route path="/admin/auth" element={isAdmin ? <Navigate to="/admin/dashboard" /> : <AdminAuth />} />
+            <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
+          </Routes>
+        </Router>
+      </ToastProvider>
     </AppContext.Provider>
   );
 }
