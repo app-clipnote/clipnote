@@ -8,7 +8,7 @@ export function Footer() {
         <div className="relative z-10 text-center max-w-2xl mx-auto mb-24">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">
             Stay Ahead with Content<br />
-            <span className="italic">Insights and Updates</span>
+            <span className="font-dancing text-primary italic">Insights and Updates</span>
           </h2>
           <p className="text-white/40 mb-10 text-lg">
             Subscribe to our newsletter for expert tips, updates, and<br className="hidden md:block" />

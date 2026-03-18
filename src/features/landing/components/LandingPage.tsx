@@ -113,7 +113,7 @@ export function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-[80px] font-bold mb-6 leading-[1.05] tracking-tight text-foreground"
+          className="text-5xl md:text-7xl lg:text-[80px] font-semibold mb-6 leading-[1.05] tracking-tight text-foreground"
         >
           Summarize videos<br />
           in <span className="font-dancing text-primary font-normal px-2 relative inline-flex pb-2 -mb-2">seconds</span>
@@ -179,7 +179,7 @@ export function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto md:auto-rows-[240px]">
-          <div className="md:col-span-1 md:row-span-1 bg-card border border-border/50 rounded-3xl p-8 flex flex-col justify-between hover:shadow-xl transition-shadow group">
+          <div className="md:col-span-1 md:row-span-1 bg-card border border-border rounded-3xl p-8 flex flex-col justify-between hover:shadow-xl transition-shadow group">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold">Smart Extraction</h3>
@@ -193,7 +193,7 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="md:col-span-1 md:row-span-1 bg-card border border-border/50 rounded-3xl p-8 flex flex-col justify-between hover:shadow-xl transition-shadow group">
+          <div className="md:col-span-1 md:row-span-1 bg-card border border-border rounded-3xl p-8 flex flex-col justify-between hover:shadow-xl transition-shadow group">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold">Privacy First</h3>
@@ -227,7 +227,7 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="md:col-span-2 md:row-span-1 bg-card border border-border/50 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 hover:shadow-xl transition-shadow overflow-hidden group">
+          <div className="md:col-span-2 md:row-span-1 bg-card border border-border rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 hover:shadow-xl transition-shadow overflow-hidden group">
             <div className="flex-1 relative z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-xs font-bold text-primary mb-4">
                 <Sparkles className="w-3 h-3" /> New Feature
@@ -237,7 +237,7 @@ export function LandingPage() {
                 Don't just read the summary. Ask questions directly to your video or document to find exact timestamps and deeper context.
               </p>
             </div>
-            <div className="w-full md:w-64 h-48 md:h-full bg-secondary/50 rounded-2xl p-4 border border-border/50 relative overflow-hidden flex items-center justify-center group-hover:bg-secondary transition-colors">
+            <div className="w-full md:w-64 h-48 md:h-full bg-secondary/50 rounded-2xl p-4 border border-border rounded-2xl relative overflow-hidden flex items-center justify-center group-hover:bg-secondary transition-colors">
               <MessageSquare className="w-12 h-12 text-primary/40 group-hover:text-primary transition-colors group-hover:scale-110 duration-500 relative z-10" />
               <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
             </div>
@@ -261,7 +261,7 @@ export function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 relative z-10">
             {/* Step 1 */}
             <div className="text-center group">
-              <div className="w-28 h-28 mx-auto bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border/50 flex flex-col items-center justify-center mb-8 relative transition-transform duration-500 group-hover:-translate-y-2">
+              <div className="w-28 h-28 mx-auto bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border flex flex-col items-center justify-center mb-8 relative transition-transform duration-500 group-hover:-translate-y-2">
                 <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center shadow-lg shadow-primary/20">1</div>
                 <UploadCloud className="w-10 h-10 text-primary mb-1" />
               </div>
@@ -273,7 +273,7 @@ export function LandingPage() {
 
             {/* Step 2 */}
             <div className="text-center group">
-              <div className="w-28 h-28 mx-auto bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border/50 flex flex-col items-center justify-center mb-8 relative transition-transform duration-500 group-hover:-translate-y-2 md:translate-y-4">
+              <div className="w-28 h-28 mx-auto bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border flex flex-col items-center justify-center mb-8 relative transition-transform duration-500 group-hover:-translate-y-2 md:translate-y-4">
                 <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center shadow-lg shadow-primary/20">2</div>
                 <Brain className="w-10 h-10 text-primary mb-1" />
               </div>
@@ -285,7 +285,7 @@ export function LandingPage() {
 
             {/* Step 3 */}
             <div className="text-center group">
-              <div className="w-28 h-28 mx-auto bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border/50 flex flex-col items-center justify-center mb-8 relative transition-transform duration-500 group-hover:-translate-y-2">
+              <div className="w-28 h-28 mx-auto bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border flex flex-col items-center justify-center mb-8 relative transition-transform duration-500 group-hover:-translate-y-2">
                 <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center shadow-lg shadow-primary/20">3</div>
                 <MessageSquare className="w-10 h-10 text-primary mb-1" />
               </div>

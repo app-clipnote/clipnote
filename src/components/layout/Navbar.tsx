@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import { ThemeToggle } from '../shared/ThemeToggle';
 import { useApp } from '../../App';
 import logoImage from '../../assets/logoicon.png';
@@ -6,34 +8,56 @@ import logoImage from '../../assets/logoicon.png';
 export function Navbar() {
   const navigate = useNavigate();
   const { user } = useApp();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const navLinks = [
+    { name: 'Features', href: '#features' },
+    { name: 'Process', href: '#how-it-works' },
+    { name: 'Reviews', href: '#testimonials' },
+    { name: 'FAQ', href: '#faq' },
+  ];
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-4xl px-4">
-      <header className="bg-background/80 backdrop-blur-md rounded-full border border-border/50 shadow-lg px-6">
-        <div className="flex items-center justify-between py-2">
-          <div className="flex items-center gap-3">
-            <img src={logoImage} alt="ClipNote Logo" className="w-8 h-8 object-contain" />
-            <span className="text-xl font-bold tracking-tight">CLIPNOTE</span>
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-6">
+      <header className="bg-background/80 backdrop-blur-md rounded-full border border-border/50 shadow-lg px-8 py-1.5 transition-all">
+        <div className="flex items-center justify-between">
+          <div 
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => navigate('/')}
+          >
+            <img src={logoImage} alt="ClipNote Logo" className="w-9 h-9 object-contain group-hover:scale-110 transition-transform" />
+            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">CLIPNOTE</span>
           </div>
-          <div className="hidden lg:flex items-center gap-8 text-sm font-semibold text-muted-foreground/80">
-            <a href="#features" className="hover:text-primary transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-primary transition-colors">Process</a>
-            <a href="#testimonials" className="hover:text-primary transition-colors">Reviews</a>
-            <a href="#faq" className="hover:text-primary transition-colors">FAQ</a>
+
+          <div className="hidden lg:flex items-center gap-10 text-sm font-semibold text-muted-foreground/80">
+            {navLinks.map((link) => (
+              <a 
+                key={link.name} 
+                href={link.href} 
+                className="hover:text-primary transition-colors relative group"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
+              </a>
+            ))}
           </div>
+
           <div className="flex items-center gap-4">
-            <ThemeToggle variant="minimal" />
+            <div className="hidden sm:block">
+              <ThemeToggle variant="minimal" />
+            </div>
+            
             {user ? (
               <button
                 onClick={() => navigate('/dashboard')}
-                className="w-9 h-9 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center border border-border transition-all overflow-hidden"
+                className="w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center border border-border transition-all overflow-hidden"
               >
-                <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold uppercase">
+                <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold uppercase">
                   {user.name.charAt(0)}
                 </div>
               </button>
             ) : (
-              <div className="flex items-center gap-4">
+              <div className="hidden sm:flex items-center gap-6">
                 <button
                   onClick={() => navigate('/auth')}
                   className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors"
@@ -42,15 +66,61 @@ export function Navbar() {
                 </button>
                 <button
                   onClick={() => navigate('/auth')}
-                  className="bg-primary text-primary-foreground text-[11px] font-bold px-5 py-2 rounded-full uppercase tracking-tighter hover:bg-primary/90 transition-all shadow-md"
+                  className="bg-primary text-primary-foreground text-[12px] font-bold px-7 py-3 rounded-full uppercase tracking-tighter hover:bg-primary/90 transition-all shadow-md active:scale-95"
                 >
                   Sign up
                 </button>
               </div>
             )}
+
+            {/* Mobile Menu Toggle */}
+            <button 
+              className="lg:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu Overlay */}
+      {isOpen && (
+        <div className="lg:hidden absolute top-full left-6 right-6 mt-4 bg-background/95 backdrop-blur-xl rounded-[2rem] border border-border/50 shadow-2xl p-8 animate-in slide-in-from-top-4 duration-300 overflow-hidden">
+          <div className="flex flex-col gap-6">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-lg font-semibold text-foreground hover:text-primary transition-colors py-2 border-b border-border/30"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.name}
+              </a>
+            ))}
+            <div className="flex items-center justify-between pt-4">
+              <span className="text-sm font-medium text-muted-foreground">Appearance</span>
+              <ThemeToggle variant="minimal" />
+            </div>
+            {!user && (
+              <div className="flex flex-col gap-4 mt-6">
+                <button
+                  onClick={() => { navigate('/auth'); setIsOpen(false); }}
+                  className="w-full py-4 text-center font-bold text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={() => { navigate('/auth'); setIsOpen(false); }}
+                  className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold transition-all shadow-lg active:scale-95"
+                >
+                  Get Started Free
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
