@@ -51,7 +51,7 @@ export function AdminAuth() {
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <Shield className="w-5 h-5 text-white" />
           </div>
-          <span className="text-2xl font-bold tracking-tight">ClipNote AI</span>
+          <span className="text-2xl font-bold tracking-tight">ClipNote</span>
           <span className="bg-primary/20 text-primary border border-primary/30 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ml-2">
             Admin
           </span>

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useApp } from '../../../App';
 import { updateProfile, getProfile } from '../../../lib/auth';
+import logoImage from '../../../assets/logoicon.png';
+
 
 export function OnboardingFlow() {
   const navigate = useNavigate();
@@ -16,37 +18,46 @@ export function OnboardingFlow() {
       id: 'free' as const,
       name: 'Free',
       price: '$0',
-      description: 'Perfect for getting started',
+      description: 'For trying things out',
       features: [
-        '10 summaries per month',
-        'Basic summarization',
-        'Text export',
-        'Email support',
+        '10 video summaries/month',
+        'Max video length: 5 minutes',
+        'Standard summary quality',
+        'Text export only',
+        'Slower processing speed',
       ],
     },
     {
       id: 'pro' as const,
       name: 'Pro',
-      price: '$19',
-      description: 'Best for regular users',
+      price: '#25,000',
+      description: 'For students, creators & professionals',
       features: [
-        'Unlimited summaries',
-        'Advanced AI models',
-        'Audio conversion',
-        'Priority support',
+        '150 summaries/month',
+        'Max video length: 60 minutes',
+        'High-quality AI summaries',
+        'Multiple formats (Bullet, Notes, Blog)',
+        'Audio extraction included',
+        'Download as PDF & DOCX',
+        'Save history',
+        'Faster processing (priority queue)',
       ],
       popular: true,
     },
     {
       id: 'enterprise' as const,
-      name: 'Enterprise',
-      price: '$99',
-      description: 'For teams and businesses',
+      name: 'Pro+',
+      price: '#60,000',
+      description: 'For heavy users & teams',
       features: [
-        'Everything in Pro',
-        'Team collaboration',
-        'Custom integrations',
-        'Dedicated support',
+        'Unlimited summaries*',
+        'Max video length: 2+ hours',
+        'Premium AI model (best quality)',
+        'All summary formats',
+        'Team workspace (coming soon)',
+        'Priority processing (fastest)',
+        'Early access to new features',
+        'API access (optional)',
       ],
     },
   ];
@@ -80,10 +91,10 @@ export function OnboardingFlow() {
       <header className="border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
+              <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="text-xl font-semibold">Summarize AI</span>
+            <span className="text-xl font-semibold">ClipNote</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>Step {step} of 2</span>
@@ -107,14 +118,14 @@ export function OnboardingFlow() {
         {step === 1 ? (
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-4xl font-semibold mb-4">Welcome to Summarize AI</h1>
+              <h1 className="text-4xl font-semibold mb-4">Welcome to ClipNote</h1>
               <p className="text-xl text-muted-foreground">
                 Let's get you set up with the perfect plan
               </p>
             </div>
 
             <div className="bg-card border border-border rounded-2xl p-8">
-              <h2 className="text-2xl font-semibold mb-6">What can you do with Summarize AI?</h2>
+              <h2 className="text-2xl font-semibold mb-6">What can you do with ClipNote?</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center flex-shrink-0">

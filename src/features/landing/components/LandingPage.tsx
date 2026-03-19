@@ -510,7 +510,201 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="max-w-7xl mx-auto px-6 py-32">
+        <div className="text-center mb-16">
+          <div className="text-[10px] font-bold text-primary uppercase tracking-widest mb-4">Pricing Plans</div>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+            Simple, <span className="font-dancing text-primary text-5xl md:text-6xl px-1">transparent</span> pricing
+          </h2>
+          <p className="text-muted-foreground font-medium mb-10">Choose the plan that's right for you</p>
+          
+          {/* Pricing Tabs */}
+          <div className="inline-flex p-1 bg-secondary rounded-2xl mb-12 border border-border/50">
+            {['Standard Pricing', 'Add Your Own API'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setSummaryMode(tab)} // Reusing summaryMode state for simplicity
+                className={`px-8 py-3 rounded-xl font-bold text-sm transition-all ${
+                  (tab === 'Standard Pricing' && summaryMode !== 'Add Your Own API') || (tab === 'Add Your Own API' && summaryMode === 'Add Your Own API')
+                    ? 'bg-background text-foreground shadow-lg'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {summaryMode === 'Add Your Own API' ? (
+            /* API Pricing View */
+            <div className="col-span-1 md:col-span-3">
+              <div className="bg-card border border-border rounded-[2.5rem] p-12 text-center max-w-2xl mx-auto shadow-xl">
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Zap className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-3xl font-bold mb-4">Bring Your Own Key</h3>
+                <p className="text-muted-foreground mb-8 text-lg font-medium leading-relaxed">
+                  Already have an OpenAI or Anthropic API key? Use it directly with ClipNote and only pay for the features you use.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 text-left max-w-lg mx-auto">
+                  {[
+                    'Full platform access',
+                    'Pay only for AI usage',
+                    'All export formats included',
+                    'Custom processing controls'
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-center gap-3">
+                      <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                        <Star className="w-3 h-3 text-primary fill-primary" />
+                      </div>
+                      <span className="text-sm font-semibold">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                <button 
+                  onClick={() => navigate('/auth')}
+                  className="bg-primary text-primary-foreground px-12 py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition-all shadow-xl active:scale-95"
+                >
+                  Configure API Keys
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Standard Pricing View */
+            <>
+              {/* Free Tier */}
+              <div className="bg-card border border-border rounded-[2.5rem] p-10 flex flex-col hover:shadow-2xl transition-all group overflow-hidden relative">
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold mb-2">Free</h3>
+                  <div className="flex items-baseline gap-1 mb-4">
+                    <span className="text-5xl font-bold">$0</span>
+                    <span className="text-muted-foreground font-semibold">/month</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium">For trying things out</p>
+                </div>
+                
+                <ul className="space-y-4 mb-10 flex-1">
+                  {[
+                    '10 video summaries/month',
+                    'Max video length: 5 minutes',
+                    'Standard summary quality',
+                    'Text export only',
+                    'Slower processing speed'
+                  ].map((feature) => (
+                    <li key={feature} className="flex items-center gap-3 text-sm font-medium">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <i className="ri-check-line text-primary text-xs font-bold" />
+                      </div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <button 
+                  onClick={() => navigate('/auth')}
+                  className="w-full py-4 rounded-full border border-border font-bold hover:bg-secondary transition-all"
+                >
+                  Get Started Free
+                </button>
+              </div>
+
+              {/* Pro Tier */}
+              <div className="bg-primary rounded-[2.5rem] p-10 flex flex-col text-white shadow-[0_20px_50px_rgba(var(--primary-rgb),0.3)] hover:shadow-[0_30px_60px_rgba(var(--primary-rgb),0.5)] transition-all scale-105 relative z-10 overflow-hidden group">
+                <div className="absolute top-6 right-8 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/20">
+                  Most Popular
+                </div>
+                <div className="mb-8 relative z-10">
+                  <h3 className="text-xl font-bold mb-2">Pro</h3>
+                  <div className="flex items-baseline gap-1 mb-4">
+                    <span className="text-5xl font-bold">#25,000</span>
+                    <span className="text-white/60 font-semibold">/month</span>
+                  </div>
+                  <p className="text-sm text-white/70 font-medium">For students, creators & professionals</p>
+                </div>
+                
+                <ul className="space-y-4 mb-10 flex-1 relative z-10">
+                  {[
+                    '150 summaries/month',
+                    'Max video length: 60 minutes',
+                    'High-quality AI summaries',
+                    'Multiple formats: Bullet points, Study notes, Blog summary',
+                    'Audio extraction included',
+                    'Download as PDF & DOCX',
+                    'Save history',
+                    'Faster processing (priority queue)'
+                  ].map((feature) => (
+                    <li key={feature} className="flex items-start gap-3 text-sm font-semibold">
+                      <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
+                        <i className="ri-check-line text-white text-xs font-bold" />
+                      </div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <button 
+                  onClick={() => navigate('/auth')}
+                  className="w-full py-4 rounded-full bg-white text-primary font-bold hover:bg-white/90 transition-all shadow-lg active:scale-95 relative z-10"
+                >
+                  Upgrade to Pro
+                </button>
+                
+                <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
+              </div>
+
+              {/* Pro+ Tier */}
+              <div className="bg-card border border-border rounded-[2.5rem] p-10 flex flex-col hover:shadow-2xl transition-all group overflow-hidden relative">
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold mb-2">Pro+</h3>
+                  <div className="flex items-baseline gap-1 mb-4">
+                    <span className="text-5xl font-bold">#60,000</span>
+                    <span className="text-muted-foreground font-semibold">/month</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium">For heavy users & teams</p>
+                </div>
+                
+                <ul className="space-y-4 mb-10 flex-1">
+                  {[
+                    'Unlimited summaries*',
+                    'Max video length: 2+ hours',
+                    'Premium AI model (best quality)',
+                    'All summary formats',
+                    'Team workspace (coming soon)',
+                    'Priority processing (fastest)',
+                    'Early access to new features',
+                    'API access (optional)'
+                  ].map((feature) => (
+                    <li key={feature} className="flex items-start gap-3 text-sm font-medium">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <i className="ri-check-line text-primary text-xs font-bold" />
+                      </div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <button 
+                  onClick={() => navigate('/auth')}
+                  className="w-full py-4 rounded-full bg-secondary text-foreground font-bold hover:bg-secondary/80 transition-all"
+                >
+                  Go Pro+
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+        
+        <div className="mt-16 text-center text-muted-foreground text-xs font-medium max-w-xl mx-auto">
+          *Unlimited summaries subject to fair wear and tear policy. Monthly usage reset applies. 
+          Prices are in local currency where applicable.
+        </div>
+      </section>
+
       {/* FAQ Section - Redesigned based on Image */}
+
       <section id="faq" className="pb-32">
         {/* FAQ Hero Header */}
         <div className="relative w-full min-h-[400px] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
