@@ -191,13 +191,14 @@ export function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden">
         {/* Looper Group Background */}
-        <div className="absolute inset-0 pointer-events-none z-0 flex justify-center">
+        <div className="absolute inset-0 pointer-events-none z-0 flex justify-center opacity-40">
           <img 
             src={looperGroup} 
             alt="" 
             className="w-full h-full object-cover min-w-[1440px]" 
           />
         </div>
+
 
         <div className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center relative z-10">
           <motion.div 
@@ -206,8 +207,9 @@ export function LandingPage() {
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/80 border border-border/50 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-8 shadow-sm backdrop-blur-sm"
           >
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          ClipNote AI Engine 2026
+          AI Powered Summarization
         </motion.div>
+
         
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
@@ -234,7 +236,7 @@ export function LandingPage() {
           transition={{ delay: 0.3 }}
           className="max-w-3xl mx-auto relative group mb-10"
         >
-          <div className="bg-background rounded-full p-2 flex flex-col sm:flex-row items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/60 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] hover:border-border ring-1 ring-transparent focus-within:ring-primary/20 focus-within:border-primary/50 relative overflow-hidden">
+          <div className="bg-background rounded-2xl sm:rounded-full p-2 flex flex-col sm:flex-row items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/60 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] hover:border-border ring-1 ring-transparent focus-within:ring-primary/20 focus-within:border-primary/50 relative overflow-hidden min-h-[64px] sm:min-h-0">
             {/* Input Field */}
             <div className="flex-1 w-full flex items-center px-6 py-2">
               <i className="ri-youtube-fill text-red-500 text-2xl mr-4 opacity-80" />
@@ -438,7 +440,7 @@ export function LandingPage() {
                             <h4 className="font-bold text-lg">{t.name}</h4>
                             <p className="text-sm text-muted-foreground">{t.email}</p>
                           </div>
-                          <div className="flex items-center gap-1 text-primary bg-primary/10 px-4 py-2 rounded-full">
+                          <div className="flex items-center gap-0.5 md:gap-1 text-primary bg-primary/10 px-3 md:px-4 py-1.5 md:py-2 rounded-full">
                             {[...Array(5)].map((_, i) => (
                               <Star 
                                 key={i} 

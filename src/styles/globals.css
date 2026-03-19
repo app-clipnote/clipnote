@@ -195,7 +195,8 @@
 
     @media (max-width: 768px) {
       input:not([type="checkbox"]):not([type="radio"]), select, textarea {
-        height: 3.5rem !important;
+        min-height: 3.5rem !important;
+        height: auto !important;
         border-radius: 0.5rem !important;
       }
     }
