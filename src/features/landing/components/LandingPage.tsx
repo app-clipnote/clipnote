@@ -191,7 +191,7 @@ export function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden">
         {/* Looper Group Background */}
-        <div className="absolute inset-0 pointer-events-none -z-10 flex justify-center">
+        <div className="absolute inset-0 pointer-events-none z-0 flex justify-center">
           <img 
             src={looperGroup} 
             alt="" 
@@ -199,7 +199,7 @@ export function LandingPage() {
           />
         </div>
 
-        <div className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center">
+        <div className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

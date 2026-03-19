@@ -151,8 +151,12 @@ export function DashboardSidebar({ selectedSummaryId, onSelectSummary, onShowSet
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-sidebar-accent transition-colors"
           >
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
-              <User className="w-5 h-5" />
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white overflow-hidden">
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-5 h-5" />
+              )}
             </div>
             <div className="flex-1 text-left">
               <p className="text-sm font-medium">{user?.name}</p>

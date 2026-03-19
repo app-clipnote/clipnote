@@ -126,7 +126,13 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    caret-color: transparent;
   }
+
+  input, textarea, [contenteditable="true"] {
+    caret-color: auto;
+  }
+
 
   body {
     @apply bg-background text-foreground;
@@ -185,6 +191,13 @@
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+        height: 3.5rem !important;
+        border-radius: 0.5rem !important;
+      }
     }
   }
 }

@@ -18,6 +18,7 @@ interface User {
   email: string;
   name: string;
   plan: 'free' | 'pro' | 'enterprise';
+  avatar?: string;
 }
 
 interface AppContextType {

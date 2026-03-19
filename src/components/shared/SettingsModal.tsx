@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, User, CreditCard, Bell, Shield, Palette, Globe } from 'lucide-react';
+import { X, User, CreditCard, Bell, Shield, Palette, Globe, Upload, Camera } from 'lucide-react';
 import { useApp } from '../../App';
 import { updateProfile } from '../../lib/auth';
 import { getSettings, updateSettings } from '../../lib/settings';
@@ -15,7 +15,9 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const [email, setEmail] = useState(user?.email || '');
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [avatar, setAvatar] = useState(user?.avatar || '');
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     if (user) {
@@ -50,8 +52,9 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         theme: darkMode ? 'dark' : 'light',
       });
       
-      setUser({ ...user, name, email });
+      setUser({ ...user, name, email, avatar });
       onClose();
+
     } catch (error) {
       console.error('Error saving settings:', error);
     } finally {
@@ -110,6 +113,37 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
             {activeTab === 'profile' && (
               <div className="max-w-2xl">
                 <h3 className="text-xl font-semibold mb-6">Profile Settings</h3>
+                
+                <div className="flex flex-col items-center mb-8">
+                  <div className="relative group">
+                    <div className="w-24 h-24 rounded-full overflow-hidden bg-secondary flex items-center justify-center border-2 border-border group-hover:border-primary transition-colors">
+                      {avatar ? (
+                        <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <User className="w-10 h-10 text-muted-foreground" />
+                      )}
+                    </div>
+                    <label className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full cursor-pointer shadow-lg hover:bg-primary/90 transition-all active:scale-95">
+                      <Camera className="w-4 h-4" />
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setAvatar(reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3">Click the camera to upload a new avatar</p>
+                </div>
                 
                 <div className="space-y-6">
                   <div>
