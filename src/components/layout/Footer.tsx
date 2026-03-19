@@ -15,7 +15,7 @@ export function Footer() {
             the latest trends in content summarization.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center gap-3 bg-white/5 p-2 rounded-full border border-white/10 max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-3 bg-white/5 p-2 rounded-2xl sm:rounded-full border border-white/10 max-w-md mx-auto min-h-[50px] sm:min-h-0">
             <input 
               type="email" 
               placeholder="Enter your email" 

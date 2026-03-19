@@ -191,7 +191,7 @@ export function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden">
         {/* Looper Group Background */}
-        <div className="absolute inset-0 pointer-events-none z-0 flex justify-center opacity-40">
+        <div className="absolute inset-0 pointer-events-none z-0 flex justify-center opacity-10">
           <img 
             src={looperGroup} 
             alt="" 
@@ -440,7 +440,7 @@ export function LandingPage() {
                             <h4 className="font-bold text-lg">{t.name}</h4>
                             <p className="text-sm text-muted-foreground">{t.email}</p>
                           </div>
-                          <div className="flex items-center gap-0.5 md:gap-1 text-primary bg-primary/10 px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                          <div className="flex items-center gap-0.5 md:gap-1 text-primary bg-primary/10 px-1.5 py-1 md:px-4 md:py-2 rounded-lg md:rounded-full w-fit">
                             {[...Array(5)].map((_, i) => (
                               <Star 
                                 key={i} 
