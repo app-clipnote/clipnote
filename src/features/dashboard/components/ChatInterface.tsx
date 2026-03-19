@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, User, Bot } from 'lucide-react';
+import { Send, User } from 'lucide-react';
+import logoImage from '../../../assets/logoicon.png';
+
 
 interface Message {
   id: string;
@@ -78,12 +80,12 @@ export function ChatInterface({ summaryText, summaryTitle }: ChatInterfaceProps)
   ];
 
   return (
-    <div className="flex flex-col h-full bg-white border border-border rounded-2xl overflow-hidden">
+    <div className="flex flex-col h-full bg-background border border-border rounded-2xl overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-border bg-secondary/50">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 flex items-center justify-center overflow-hidden rounded-lg">
+            <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <h3 className="font-medium">AI Assistant</h3>
@@ -100,8 +102,8 @@ export function ChatInterface({ summaryText, summaryTitle }: ChatInterfaceProps)
             className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {message.role === 'assistant' && (
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                <Bot className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-lg">
+                <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
               </div>
             )}
             <div
@@ -130,8 +132,8 @@ export function ChatInterface({ summaryText, summaryTitle }: ChatInterfaceProps)
 
         {isTyping && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-lg">
+              <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
             </div>
             <div className="bg-secondary rounded-2xl px-4 py-3">
               <div className="flex gap-1">

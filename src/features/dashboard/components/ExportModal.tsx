@@ -120,7 +120,7 @@ export function ExportModal({ summaryId, onClose }: ExportModalProps) {
                   className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-colors text-left ${
                     selectedFormat === format.id
                       ? 'border-primary bg-accent'
-                      : 'border-border bg-white hover:border-primary/50'
+                      : 'border-border bg-card hover:border-primary/50'
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
