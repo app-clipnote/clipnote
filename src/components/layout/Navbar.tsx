@@ -20,7 +20,7 @@ export function Navbar() {
 
   return (
     <div className="fixed top-3 sm:top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-3 sm:px-6">
-      <header className="bg-background/80 backdrop-blur-md rounded-full border border-border/50 shadow-lg px-8 py-1.5 transition-all">
+      <header className="bg-background/80 backdrop-blur-md rounded-full border border-border/50 shadow-lg px-8 py-4 transition-all">
         <div className="flex items-center justify-between">
           <div 
             className="flex items-center gap-3 cursor-pointer group"

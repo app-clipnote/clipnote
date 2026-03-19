@@ -53,6 +53,21 @@ export function LandingPage() {
       answer: "Yes, your account can be accessed from any device. Your summaries and history are synced across all platforms automatically."
     },
     {
+      category: "Account Support",
+      question: "How do I delete my account?",
+      answer: "You can permanently delete your account from the security settings. please note this action is irreversible."
+    },
+    {
+      category: "Account Support",
+      question: "What languages are supported?",
+      answer: "Currently we support over 50 languages including English, Spanish, French, German, Mandarin, and Japanese."
+    },
+    {
+      category: "Account Support",
+      question: "Is my data encrypted?",
+      answer: "Yes, all your data is encrypted both at rest and in transit using industry-standard AES-256 encryption."
+    },
+    {
       category: "Subscription",
       question: "Do you need Credit card for 14-Day Trial?",
       answer: "Absolutely not! You can start your 14-day pro trial without entering any payment information."
@@ -61,6 +76,21 @@ export function LandingPage() {
       category: "Subscription",
       question: "What happens if i want to cancel my subscription?",
       answer: "You still pay for the remainder of the time for the plan you signed up for. Your access remains active until the end of the billing period."
+    },
+    {
+      category: "Subscription",
+      question: "Can I get a refund?",
+      answer: "We offer a 7-day money-back guarantee for all our paid plans if you're not satisfied with the service."
+    },
+    {
+      category: "Subscription",
+      question: "Is there a student discount?",
+      answer: "Yes! Students with a valid .edu email address are eligible for a 50% discount on our annual Pro plan."
+    },
+    {
+      category: "Subscription",
+      question: "What's the difference between Pro and Enterprise?",
+      answer: "Enterprise includes custom AI modeling, priority support, and dedicated account management for large teams."
     },
     {
       category: "For Creators",
@@ -73,6 +103,21 @@ export function LandingPage() {
       answer: "Yes! You can export your summaries to multiple formats including PDF, TXT, and direct sync to Notion (for Enterprise users)."
     },
     {
+      category: "For Creators",
+      question: "Can I use these summaries in my own videos?",
+      answer: "Absolutely! Our summaries are yours to use. Many creators use them to generate video descriptions and social media posts."
+    },
+    {
+      category: "For Creators",
+      question: "Does it support private YouTube videos?",
+      answer: "Currently we only support public and unlisted YouTube videos. Private videos cannot be accessed by our AI engine."
+    },
+    {
+      category: "For Creators",
+      question: "Can I customize the summary length?",
+      answer: "Yes, you can choose between 'Short', 'Detailed', and 'Comprehensive' modes to get the exact level of detail you need."
+    },
+    {
       category: "Payment",
       question: "Can I Purchase Courses from outside the US?",
       answer: "Yes, our payment processor supports international cards and various digital wallets from almost every country."
@@ -81,6 +126,21 @@ export function LandingPage() {
       category: "Payment",
       question: "Possible to upgrade my plan even after signing up?",
       answer: "Absolutely! You can upgrade your plan at any time from your account settings. The price will be prorated based on your current cycle."
+    },
+    {
+      category: "Payment",
+      question: "What payment methods do you accept?",
+      answer: "We accept all major credit cards, PayPal, and Apple Pay. For Enterprise customers, we also support bank transfers."
+    },
+    {
+      category: "Payment",
+      question: "Do you provide invoices for business?",
+      answer: "Yes, you can download VAT-compliant invoices directly from your billing dashboard for every transaction."
+    },
+    {
+      category: "Payment",
+      question: "Is there a discount for annual billing?",
+      answer: "Yes, choosing annual billing saves you 20% compared to monthly payments on all our pro plans."
     }
   ];
 
@@ -129,21 +189,22 @@ export function LandingPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center">
+      <section className="relative w-full overflow-hidden">
         {/* Looper Group Background */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] h-full pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none -z-10 flex justify-center">
           <img 
             src={looperGroup} 
             alt="" 
-            className="w-full h-auto object-cover opacity-60 dark:opacity-40" 
+            className="w-full h-full object-cover min-w-[1440px]" 
           />
         </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/80 border border-border/50 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-8 shadow-sm backdrop-blur-sm"
-        >
+        <div className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/80 border border-border/50 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-8 shadow-sm backdrop-blur-sm"
+          >
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           ClipNote AI Engine 2026
         </motion.div>
@@ -204,6 +265,7 @@ export function LandingPage() {
             <span className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5 text-primary"/> Documents</span>
           </div>
         </motion.div>
+        </div>
       </section>
 
       {/* Bento Grid */}
@@ -283,9 +345,8 @@ export function LandingPage() {
               <img 
                 src="https://images.unsplash.com/photo-1587560699334-cc4ff634909a?q=80&w=2670&auto=format&fit=crop" 
                 alt="Chat illustration"
-                className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 group-hover:opacity-60 transition-opacity duration-500"
+                className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-60 transition-opacity duration-500"
               />
-              <Sparkles className="w-12 h-12 text-primary/40 group-hover:text-primary transition-colors group-hover:scale-110 duration-500 relative z-10" />
             </div>
           </div>
         </div>
@@ -378,7 +439,6 @@ export function LandingPage() {
                             <p className="text-sm text-muted-foreground">{t.email}</p>
                           </div>
                           <div className="flex items-center gap-1 text-primary bg-primary/10 px-4 py-2 rounded-full">
-                            <span className="font-bold text-sm mr-1">{t.rating}</span>
                             {[...Array(5)].map((_, i) => (
                               <Star 
                                 key={i} 
@@ -453,11 +513,23 @@ export function LandingPage() {
         {/* FAQ Hero Header */}
         <div className="relative w-full min-h-[400px] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
           <div className="absolute inset-0 z-0 bg-[#0a0c10]">
-            <img 
-              src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2670&auto=format&fit=crop" 
-              alt="City skyline" 
-              className="w-full h-full object-cover opacity-40 mix-blend-luminosity" 
-            />
+            <AnimatePresence mode="wait">
+              <motion.img 
+                key={activeFaqCategory}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                src={
+                  activeFaqCategory === 'Account Support' ? "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2670&auto=format&fit=crop" :
+                  activeFaqCategory === 'Subscription' ? "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670&auto=format&fit=crop" :
+                  activeFaqCategory === 'For Creators' ? "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2670&auto=format&fit=crop" :
+                  "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2670&auto=format&fit=crop"
+                }
+                alt="FAQ Category theme" 
+                className="w-full h-full object-cover mix-blend-luminosity" 
+              />
+            </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-[#0a0c10]"></div>
           </div>
 
