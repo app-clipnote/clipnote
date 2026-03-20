@@ -89,8 +89,8 @@ export function LandingPage() {
     },
     {
       category: "Subscription",
-      question: "What's the difference between Pro and Enterprise?",
-      answer: "Enterprise includes custom AI modeling, priority support, and dedicated account management for large teams."
+      question: "What's the difference between Pro and Pro+?",
+      answer: "Pro+ offers higher usage limits, priority processing, and early access to new features compared to our standard Pro plan."
     },
     {
       category: "For Creators",
@@ -119,7 +119,7 @@ export function LandingPage() {
     },
     {
       category: "Payment",
-      question: "Can I Purchase Courses from outside the US?",
+      question: "Can I Purchase Courses from outside Nigeria?",
       answer: "Yes, our payment processor supports international cards and various digital wallets from almost every country."
     },
     {
@@ -200,7 +200,7 @@ export function LandingPage() {
         </div>
 
 
-        <div className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center relative z-10">
+        <div className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-16 text-center relative z-10 flex flex-col items-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -580,7 +580,7 @@ export function LandingPage() {
                 <div className="mb-8">
                   <h3 className="text-xl font-bold mb-2">Free</h3>
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-5xl font-bold">$0</span>
+                    <span className="text-5xl font-bold">₦0</span>
                     <span className="text-muted-foreground font-semibold">/month</span>
                   </div>
                   <p className="text-sm text-muted-foreground font-medium">For trying things out</p>
@@ -604,7 +604,7 @@ export function LandingPage() {
                 </ul>
                 
                 <button 
-                  onClick={() => navigate('/auth')}
+                  onClick={() => navigate('/auth?plan=free')}
                   className="w-full py-4 rounded-full border border-border font-bold hover:bg-secondary transition-all"
                 >
                   Get Started Free
@@ -619,7 +619,7 @@ export function LandingPage() {
                 <div className="mb-8 relative z-10">
                   <h3 className="text-xl font-bold mb-2">Pro</h3>
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-5xl font-bold">#25,000</span>
+                    <span className="text-5xl font-bold">₦25,000</span>
                     <span className="text-white/60 font-semibold">/month</span>
                   </div>
                   <p className="text-sm text-white/70 font-medium">For students, creators & professionals</p>
@@ -646,7 +646,7 @@ export function LandingPage() {
                 </ul>
                 
                 <button 
-                  onClick={() => navigate('/auth')}
+                  onClick={() => navigate('/auth?plan=pro')}
                   className="w-full py-4 rounded-full bg-white text-primary font-bold hover:bg-white/90 transition-all shadow-lg active:scale-95 relative z-10"
                 >
                   Upgrade to Pro
@@ -660,7 +660,7 @@ export function LandingPage() {
                 <div className="mb-8">
                   <h3 className="text-xl font-bold mb-2">Pro+</h3>
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-5xl font-bold">#60,000</span>
+                    <span className="text-5xl font-bold">₦60,000</span>
                     <span className="text-muted-foreground font-semibold">/month</span>
                   </div>
                   <p className="text-sm text-muted-foreground font-medium">For heavy users & teams</p>
@@ -687,7 +687,7 @@ export function LandingPage() {
                 </ul>
                 
                 <button 
-                  onClick={() => navigate('/auth')}
+                  onClick={() => navigate('/auth?plan=pro-plus')}
                   className="w-full py-4 rounded-full bg-secondary text-foreground font-bold hover:bg-secondary/80 transition-all"
                 >
                   Go Pro+

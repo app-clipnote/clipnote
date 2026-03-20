@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useApp } from '../../../App';
 import { updateProfile, getProfile } from '../../../lib/auth';
@@ -8,9 +8,11 @@ import logoImage from '../../../assets/logoicon.png';
 
 export function OnboardingFlow() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialPlan = searchParams.get('plan') as any;
   const { user, setUser, setNeedsOnboarding } = useApp();
-  const [step, setStep] = useState(1);
-  const [selectedPlan, setSelectedPlan] = useState<'free' | 'pro' | 'enterprise'>('free');
+  const [step, setStep] = useState(initialPlan ? 2 : 1);
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'pro' | 'pro-plus'>(initialPlan || 'free');
   const [saving, setSaving] = useState(false);
 
   const plans = [
@@ -30,7 +32,7 @@ export function OnboardingFlow() {
     {
       id: 'pro' as const,
       name: 'Pro',
-      price: '#25,000',
+      price: '₦25,000',
       description: 'For students, creators & professionals',
       features: [
         '150 summaries/month',
@@ -45,9 +47,9 @@ export function OnboardingFlow() {
       popular: true,
     },
     {
-      id: 'enterprise' as const,
+      id: 'pro-plus' as const,
       name: 'Pro+',
-      price: '#60,000',
+      price: '₦60,000',
       description: 'For heavy users & teams',
       features: [
         'Unlimited summaries*',

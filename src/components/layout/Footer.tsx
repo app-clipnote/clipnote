@@ -54,9 +54,9 @@ export function Footer() {
           <div className="md:col-span-2">
             <h4 className="font-bold mb-6 text-white/60">Support</h4>
             <ul className="space-y-4 text-white/40 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Help</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a></li>
+              <li><a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</a></li>
             </ul>
           </div>
 

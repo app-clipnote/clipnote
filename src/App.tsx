@@ -6,6 +6,9 @@ import { OnboardingFlow } from './features/onboarding/components/OnboardingFlow'
 import { Dashboard } from './pages/Dashboard';
 import { AdminAuth } from './features/admin/components/AdminAuth';
 import { AdminDashboard } from './features/admin/components/AdminDashboard';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsOfService } from './pages/TermsOfService';
+import { SystemAlertModal } from './components/shared/SystemAlertModal';
 import { getProfile, getAuthUser } from './lib/auth';
 import { getSummaries } from './lib/summaries';
 import { getCurrentUserId } from './lib/local-storage';
@@ -17,7 +20,7 @@ interface User {
   id: string;
   email: string;
   name: string;
-  plan: 'free' | 'pro' | 'enterprise';
+  plan: 'free' | 'pro' | 'pro-plus' | 'enterprise';
   avatar?: string;
 }
 
@@ -32,6 +35,7 @@ interface AppContextType {
   setNeedsOnboarding: (needs: boolean) => void;
   loading: boolean;
   isAdmin: boolean;
+  showAlert: (type: 'success' | 'error' | 'warning' | 'info', title: string, message: string) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -48,6 +52,15 @@ function App() {
   const [summaries, setSummaries] = useState<Summary[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [alert, setAlert] = useState<{
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message: string;
+  } | null>(null);
+
+  const showAlert = (type: 'success' | 'error' | 'warning' | 'info', title: string, message: string) => {
+    setAlert({ type, title, message });
+  };
 
   useEffect(() => {
     // Check for admin session
@@ -142,17 +155,20 @@ function App() {
         setNeedsOnboarding,
         loading,
         isAdmin,
+        showAlert,
       }}
     >
       <ToastProvider>
-        <Router basename={import.meta.env.BASE_URL}>
+        <Router basename={(import.meta as any).env?.BASE_URL || '/'}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
             <Route
               path="/onboarding"
               element={
-                user && needsOnboarding ? <OnboardingFlow /> : <Navigate to={user ? '/dashboard' : '/auth'} />
+                user && (needsOnboarding || !user.plan) ? <OnboardingFlow /> : <Navigate to={user ? '/dashboard' : '/auth'} />
               }
             />
             <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
@@ -160,6 +176,14 @@ function App() {
             <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
           </Routes>
         </Router>
+        {alert && (
+          <SystemAlertModal
+            type={alert.type}
+            title={alert.title}
+            message={alert.message}
+            onClose={() => setAlert(null)}
+          />
+        )}
       </ToastProvider>
     </AppContext.Provider>
   );

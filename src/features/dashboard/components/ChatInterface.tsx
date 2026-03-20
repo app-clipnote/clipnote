@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, User } from 'lucide-react';
+import { Send, User, X } from 'lucide-react';
 import logoImage from '../../../assets/logoicon.png';
 
 
@@ -13,9 +13,10 @@ interface Message {
 interface ChatInterfaceProps {
   summaryText: string;
   summaryTitle: string;
+  onClose?: () => void;
 }
 
-export function ChatInterface({ summaryText, summaryTitle }: ChatInterfaceProps) {
+export function ChatInterface({ summaryText, summaryTitle, onClose }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -82,7 +83,7 @@ export function ChatInterface({ summaryText, summaryTitle }: ChatInterfaceProps)
   return (
     <div className="flex flex-col h-full bg-background border border-border rounded-2xl overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-border bg-secondary/50">
+      <div className="px-6 py-4 border-b border-border bg-secondary/50 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 flex items-center justify-center overflow-hidden rounded-lg">
             <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
@@ -92,6 +93,14 @@ export function ChatInterface({ summaryText, summaryTitle }: ChatInterfaceProps)
             <p className="text-xs text-muted-foreground">Ask questions about this summary</p>
           </div>
         </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-secondary rounded-full transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Messages */}

@@ -22,9 +22,17 @@ interface DashboardSidebarProps {
   selectedSummaryId: string | null;
   onSelectSummary: (id: string | null) => void;
   onShowSettings: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function DashboardSidebar({ selectedSummaryId, onSelectSummary, onShowSettings }: DashboardSidebarProps) {
+export function DashboardSidebar({ 
+  selectedSummaryId, 
+  onSelectSummary, 
+  onShowSettings,
+  isOpen,
+  onClose
+}: DashboardSidebarProps) {
   const navigate = useNavigate();
   const { user, setUser, summaries } = useApp();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -66,13 +74,35 @@ export function DashboardSidebar({ selectedSummaryId, onSelectSummary, onShowSet
   };
 
   return (
-    <aside className="w-80 bg-sidebar border-r border-sidebar-border flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-3 mb-4">
-          <img src={logoImage} alt="ClipNote Logo" className="w-8 h-8 object-contain" />
-          <span className="text-lg font-semibold">ClipNote</span>
-        </div>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-80 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-300 md:relative md:translate-x-0
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        {/* Header */}
+        <div className="p-4 border-b border-sidebar-border">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <img src={logoImage} alt="ClipNote Logo" className="w-8 h-8 object-contain" />
+              <span className="text-lg font-semibold">ClipNote</span>
+            </div>
+            {onClose && (
+              <button 
+                onClick={onClose}
+                className="p-2 md:hidden text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="w-5 h-5 rotate-180" />
+              </button>
+            )}
+          </div>
 
         <button
           onClick={handleNewSummary}
@@ -197,5 +227,6 @@ export function DashboardSidebar({ selectedSummaryId, onSelectSummary, onShowSet
         </div>
       </div>
     </aside>
+    </>
   );
 }

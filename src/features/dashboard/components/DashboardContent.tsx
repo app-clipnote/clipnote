@@ -9,7 +9,18 @@ import {
   Loader2,
   CheckCircle2,
   Play,
-  MessageSquare
+  MessageSquare,
+  Globe,
+  Plus,
+  ArrowRight,
+  Clock,
+  Settings,
+  Bell,
+  Search,
+  User,
+  LogOut,
+  Star,
+  CheckCircle
 } from 'lucide-react';
 import { useApp } from '../../../App';
 import { createSummary } from '../../../lib/summaries';
@@ -20,9 +31,10 @@ interface DashboardContentProps {
   selectedSummaryId: string | null;
   onShowExport: () => void;
   onSummaryCreated: (summaryId: string) => void;
+  onToggleSidebar?: () => void;
 }
 
-export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCreated }: DashboardContentProps) {
+export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCreated, onToggleSidebar }: DashboardContentProps) {
   const { user, summaries, refreshSummaries } = useApp();
   const [url, setUrl] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -129,12 +141,20 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
       {!selectedSummary ? (
         <div className="flex-1 flex flex-col items-center justify-center p-8 overflow-y-auto">
           <div className="w-full max-w-3xl">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
+            <div className="text-center mb-8 pt-12 md:pt-0">
+              <div className="flex md:hidden absolute top-4 left-4">
+                <button
+                  onClick={onToggleSidebar}
+                  className="p-2 rounded-lg bg-secondary/50 border border-border text-muted-foreground hover:text-foreground"
+                >
+                  <MessageSquare className="w-6 h-6 rotate-90" />
+                </button>
+              </div>
+              <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 mb-6">
                 <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-3xl font-semibold mb-2">What would you like to summarize?</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-2xl md:text-3xl font-semibold mb-2">What would you like to summarize?</h1>
+              <p className="text-sm md:text-base text-muted-foreground px-4">
                 Paste a YouTube URL, upload an audio file, or share any web link
               </p>
             </div>
@@ -171,13 +191,13 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
               </button>
             </form>
 
-            <div className="grid grid-cols-3 gap-4 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
               <div className="bg-card border border-border rounded-xl p-6 text-center">
                 <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center mx-auto mb-3">
                   <Play className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-medium mb-1">YouTube</h3>
-                <p className="text-sm text-muted-foreground">Summarize videos</p>
+                <p className="text-xs md:text-sm text-muted-foreground">Summarize videos</p>
               </div>
 
               <div className="bg-card border border-border rounded-xl p-6 text-center">
@@ -185,7 +205,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                   <FileAudio className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-medium mb-1">Audio</h3>
-                <p className="text-sm text-muted-foreground">Convert to text</p>
+                <p className="text-xs md:text-sm text-muted-foreground">Convert to text</p>
               </div>
 
               <div className="bg-card border border-border rounded-xl p-6 text-center">
@@ -193,7 +213,7 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                   <Link2 className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-medium mb-1">Web Links</h3>
-                <p className="text-sm text-muted-foreground">Extract insights</p>
+                <p className="text-xs md:text-sm text-muted-foreground">Extract insights</p>
               </div>
             </div>
           </div>
@@ -201,25 +221,33 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
       ) : (
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="border-b border-border bg-card px-8 py-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <h1 className="text-2xl font-semibold mb-2">{selectedSummary.title}</h1>
-                <a
-                  href={selectedSummary.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline flex items-center gap-1"
+          <div className="border-b border-border bg-card px-4 md:px-8 py-4 md:py-6">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div className="flex-1 flex items-start gap-3">
+                <button
+                  onClick={onToggleSidebar}
+                  className="p-2 md:hidden rounded-lg bg-secondary/50 border border-border text-muted-foreground hover:text-foreground shrink-0 mt-1"
                 >
-                  <Link2 className="w-4 h-4" />
-                  {selectedSummary.url}
-                </a>
+                  <MessageSquare className="w-5 h-5 rotate-90" />
+                </button>
+                <div className="min-w-0">
+                  <h1 className="text-xl md:text-2xl font-semibold mb-1 truncate">{selectedSummary.title}</h1>
+                  <a
+                    href={selectedSummary.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs md:text-sm text-primary hover:underline flex items-center gap-1 truncate"
+                  >
+                    <Link2 className="w-3.5 h-3.5" />
+                    {selectedSummary.url}
+                  </a>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
                 <button
                   onClick={handleCopy}
-                  className="p-2.5 rounded-lg border border-border hover:bg-secondary transition-colors"
+                  className="p-2 md:p-2.5 rounded-lg border border-border hover:bg-secondary transition-colors shrink-0"
                   title="Copy to clipboard"
                 >
                   {copied ? (
@@ -230,49 +258,66 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                 </button>
                 <button
                   onClick={handleTextToSpeech}
-                  className="p-2.5 rounded-lg border border-border hover:bg-secondary transition-colors"
+                  className="p-2 md:p-2.5 rounded-lg border border-border hover:bg-secondary transition-colors shrink-0"
                   title="Convert to audio"
                 >
                   <Volume2 className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setShowChat(true)}
-                  className="px-4 py-2.5 rounded-lg border border-border hover:bg-secondary transition-colors flex items-center gap-2"
+                  className="px-3 md:px-4 py-2 md:py-2.5 rounded-lg border border-border hover:bg-secondary transition-colors flex items-center gap-2 whitespace-nowrap"
                   title="Chat with AI"
                 >
                   <MessageSquare className="w-5 h-5" />
-                  Ask AI
+                  <span className="hidden sm:inline">Ask AI</span>
                 </button>
                 <button
                   onClick={onShowExport}
-                  className="px-4 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2"
+                  className="px-3 md:px-4 py-2 md:py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2 whitespace-nowrap"
                 >
                   <Download className="w-5 h-5" />
-                  Export
+                  <span className="hidden sm:inline">Export</span>
                 </button>
               </div>
             </div>
           </div>
 
           {/* Summary Content */}
-          <div className="flex-1 overflow-y-auto p-8">
+          <div className="flex-1 overflow-y-auto p-4 md:p-8">
             <div className="max-w-3xl mx-auto">
-              <div className="bg-card border border-border rounded-2xl p-8">
+              <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
                   <Sparkles className="w-4 h-4 text-primary" />
                   <span>AI-generated summary</span>
                 </div>
 
-                <div className="prose prose-gray max-w-none">
-                  {selectedSummary.summary.split('\n').map((paragraph, index) => (
-                    <p key={index} className="mb-4 last:mb-0 leading-relaxed">
-                      {paragraph}
-                    </p>
-                  ))}
+                <div className="prose prose-gray max-w-none text-sm md:text-base">
+                  <div className="mb-8 space-y-6">
+                    {selectedSummary.summary.split('\n').map((paragraph, index) => (
+                      <div key={index} className="flex gap-4 group">
+                        <span className="text-primary font-mono text-xs mt-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                          [{Math.floor(index * 1.5)}:{(index * 15) % 60 === 0 ? '00' : (index * 15) % 60}]
+                        </span>
+                        <div className="flex-1">
+                          <p className="mb-2 leading-relaxed">
+                            {paragraph}
+                          </p>
+                          <div className="flex gap-4 mt-2">
+                            <button className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                              <Volume2 className="w-3 h-3" /> Show Captions
+                            </button>
+                            <button className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                              <Globe className="w-3 h-3" /> Translate
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-border">
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs md:text-sm text-muted-foreground">
                     <span>Generated on {new Date(selectedSummary.created_at).toLocaleDateString()}</span>
                     <span className="capitalize">{selectedSummary.type} content</span>
                   </div>
@@ -283,17 +328,12 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
         </div>
       )}
       {showChat && selectedSummary && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="w-full max-w-2xl h-[600px] relative">
-            <button
-              onClick={() => setShowChat(false)}
-              className="absolute -top-12 right-0 text-white hover:text-white/80 transition-colors"
-            >
-              ✕ Close
-            </button>
             <ChatInterface
               summaryText={selectedSummary.summary}
               summaryTitle={selectedSummary.title}
+              onClose={() => setShowChat(false)}
             />
           </div>
         </div>

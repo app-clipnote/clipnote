@@ -7,7 +7,7 @@ import {
   getCurrentUser,
   createDefaultSettings,
 } from './local-storage';
-import type { Profile } from './types';
+import type { Profile } from '../types';
 
 export async function signUp(email: string, password: string, name: string) {
   // Check if user already exists
@@ -92,7 +92,7 @@ export async function getProfile(userId: string) {
 
 export async function updateProfile(
   userId: string,
-  updates: { name?: string; email?: string; plan?: 'free' | 'pro' | 'enterprise' }
+  updates: { name?: string; email?: string; plan?: 'free' | 'pro' | 'pro-plus' | 'enterprise' }
 ) {
   const user = getUserById(userId);
   

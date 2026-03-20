@@ -1,5 +1,5 @@
 // Local storage utility for managing app data
-import type { Profile, Summary, UserSettings } from './types';
+import type { Profile, Summary, UserSettings } from '../types';
 
 const STORAGE_KEYS = {
   USERS: 'ai_summarizer_users',

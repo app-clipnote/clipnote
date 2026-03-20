@@ -3,6 +3,7 @@ import { X, User, CreditCard, Bell, Shield, Palette, Globe, Upload, Camera } fro
 import { useApp } from '../../App';
 import { updateProfile } from '../../lib/auth';
 import { getSettings, updateSettings } from '../../lib/settings';
+import { PricingModal } from './PricingModal';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -17,6 +18,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const [darkMode, setDarkMode] = useState(false);
   const [avatar, setAvatar] = useState(user?.avatar || '');
   const [loading, setLoading] = useState(false);
+  const [showPricing, setShowPricing] = useState(false);
 
 
   useEffect(() => {
@@ -51,6 +53,15 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         email_notifications: emailNotifications,
         theme: darkMode ? 'dark' : 'light',
       });
+
+      // Apply theme immediately
+      if (darkMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
       
       setUser({ ...user, name, email, avatar });
       onClose();
@@ -66,7 +77,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     { id: 'profile', label: 'Profile', icon: User },
     { id: 'billing', label: 'Billing', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'privacy', label: 'Privacy', icon: Shield },
+    { id: 'security', label: 'Security', icon: Shield },
     { id: 'appearance', label: 'Appearance', icon: Palette },
   ];
 
@@ -170,9 +181,12 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                     <label className="block text-sm mb-2">Language</label>
                     <select className="w-full px-4 py-3 bg-input-background border border-input rounded-xl outline-none focus:border-primary transition-colors">
                       <option>English</option>
+                      <option>Pidgin (Nigeria)</option>
+                      <option>Yoruba</option>
+                      <option>Igbo</option>
+                      <option>Hausa</option>
                       <option>Spanish</option>
                       <option>French</option>
-                      <option>German</option>
                     </select>
                   </div>
                 </div>
@@ -183,34 +197,57 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               <div className="max-w-2xl">
                 <h3 className="text-xl font-semibold mb-6">Billing & Subscription</h3>
                 
-                <div className="bg-card border border-border rounded-xl p-6 mb-6">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="bg-card border border-border rounded-2xl p-6 mb-8 bg-gradient-to-br from-primary/5 to-transparent">
+                  <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h4 className="font-semibold capitalize">{user?.plan} Plan</h4>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-bold text-lg capitalize">{user?.plan} Plan</h4>
+                        <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Active</span>
+                      </div>
                       <p className="text-sm text-muted-foreground">
-                        {user?.plan === 'free' ? 'Free forever' : `$${user?.plan === 'pro' ? '19' : '99'}/month`}
+                        {user?.plan === 'free' ? 'Free forever' : `₦${user?.plan === 'pro' ? '25,000' : '60,000'}/month`}
                       </p>
                     </div>
-                    <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-                      Upgrade Plan
+                    <button 
+                      onClick={() => setShowPricing(true)}
+                      className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95"
+                    >
+                      Explore Plans
                     </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border/50">
+                    <div>
+                      <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Usage this month</p>
+                      <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden">
+                        <div className="h-full bg-primary w-[45%]" />
+                      </div>
+                      <p className="text-xs mt-1 font-medium">45 / 100 summaries</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Next Billing Date</p>
+                      <p className="text-sm font-medium">April 20, 2026</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Payment Method</h4>
-                  <div className="bg-card border border-border rounded-xl p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-8 bg-secondary rounded flex items-center justify-center">
-                        <CreditCard className="w-5 h-5" />
+                <div className="space-y-6">
+                  <h4 className="font-bold">Payment Methods</h4>
+                  <div className="bg-card border border-border rounded-xl p-4 flex items-center justify-between group hover:border-primary/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-8 bg-secondary rounded-lg flex items-center justify-center border border-border">
+                        <CreditCard className="w-5 h-5 text-muted-foreground" />
                       </div>
                       <div>
-                        <p className="font-medium">•••• •••• •••• 4242</p>
-                        <p className="text-sm text-muted-foreground">Expires 12/26</p>
+                        <p className="font-bold text-sm">•••• •••• •••• 4242</p>
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold">Expires 12/26</p>
                       </div>
                     </div>
-                    <button className="text-sm text-primary hover:underline">Edit</button>
+                    <button className="text-xs font-bold text-primary hover:underline uppercase tracking-wider">Edit</button>
                   </div>
+                  <button className="w-full py-3 border border-dashed border-border rounded-xl text-xs font-bold uppercase tracking-wider text-muted-foreground hover:bg-secondary transition-colors">
+                    Add New Payment Method
+                  </button>
                 </div>
               </div>
             )}
@@ -258,33 +295,96 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                       <div className="w-5 h-5 bg-background rounded-full shadow-sm translate-x-0.5" />
                     </button>
                   </div>
+
+                  <div className="flex items-center justify-between py-3">
+                    <div>
+                      <h4 className="font-medium">Usage Alerts</h4>
+                      <p className="text-sm text-muted-foreground">Get notified when you approach your limits</p>
+                    </div>
+                    <button className="w-12 h-6 rounded-full bg-primary">
+                      <div className="w-5 h-5 bg-background rounded-full shadow-sm translate-x-6" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between py-3">
+                    <div>
+                      <h4 className="font-medium">Product Updates</h4>
+                      <p className="text-sm text-muted-foreground">New features and improvements</p>
+                    </div>
+                    <button className="w-12 h-6 rounded-full bg-primary">
+                      <div className="w-5 h-5 bg-background rounded-full shadow-sm translate-x-6" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
 
-            {activeTab === 'privacy' && (
+            {activeTab === 'security' && (
               <div className="max-w-2xl">
-                <h3 className="text-xl font-semibold mb-6">Privacy & Security</h3>
+                <h3 className="text-xl font-semibold mb-6">Security & Privacy</h3>
                 
                 <div className="space-y-6">
-                  <div className="bg-card border border-border rounded-xl p-6">
-                    <h4 className="font-semibold mb-2">Data Privacy</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Your summaries are encrypted and stored securely. We never share your data with third parties.
-                    </p>
-                    <button className="text-sm text-primary hover:underline">
-                      View Privacy Policy
-                    </button>
+                  <div>
+                    <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Change Password</h4>
+                    <div className="space-y-4">
+                      <input
+                        type="password"
+                        placeholder="Current Password"
+                        className="w-full px-4 py-3 bg-input-background border border-input rounded-xl outline-none focus:border-primary transition-colors"
+                      />
+                      <input
+                        type="password"
+                        placeholder="New Password"
+                        className="w-full px-4 py-3 bg-input-background border border-input rounded-xl outline-none focus:border-primary transition-colors"
+                      />
+                      <button className="px-6 py-2 bg-secondary hover:bg-secondary/80 rounded-xl font-medium transition-colors">
+                        Update Password
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="bg-card border border-border rounded-xl p-6">
-                    <h4 className="font-semibold mb-2">Delete Account</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Permanently delete your account and all associated data.
-                    </p>
-                    <button className="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors">
-                      Delete Account
-                    </button>
+                  <div className="pt-6 border-t border-border">
+                    <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Recent Activity</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Globe className="w-4 h-4 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Login from Lagos, Nigeria</p>
+                            <p className="text-xs text-muted-foreground">Today at 10:45 AM</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded-full font-bold uppercase">Success</span>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Shield className="w-4 h-4 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">API key added</p>
+                            <p className="text-xs text-muted-foreground">Yesterday at 4:20 PM</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-border flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-destructive">Danger Zone</h4>
+                      <p className="text-xs text-muted-foreground">Action cannot be undone</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="px-4 py-2 text-sm font-medium border border-border rounded-xl hover:bg-secondary transition-colors">
+                        Log out of all devices
+                      </button>
+                      <button className="px-4 py-2 text-sm font-medium bg-destructive text-destructive-foreground rounded-xl hover:bg-destructive/90 transition-colors">
+                        Delete Account
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -341,6 +441,8 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           </button>
         </div>
       </div>
+
+      {showPricing && <PricingModal onClose={() => setShowPricing(false)} />}
     </div>
   );
 }

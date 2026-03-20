@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Sparkles, Mail, Lock, User, ArrowLeft, AlertCircle } from 'lucide-react';
 import { useApp } from '../../../App';
 import { signIn, signUp } from '../../../lib/auth';
@@ -7,6 +7,8 @@ import logoIcon from '../../../assets/logoicon.png';
 
 export function AuthPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const plan = searchParams.get('plan');
   const { setNeedsOnboarding, reloadUser } = useApp();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -28,8 +30,9 @@ export function AuthPage() {
       } else {
         await signUp(email, password, name);
         await reloadUser();
+        // If they came from a specific pricing card, we'll pass that to onboarding
         setNeedsOnboarding(true);
-        navigate('/onboarding');
+        navigate(`/onboarding${plan ? `?plan=${plan}` : ''}`);
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred. Please try again.');
