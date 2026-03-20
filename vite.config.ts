@@ -58,5 +58,9 @@
     server: {
       port: 3000,
       open: true,
+      strictPort: false,
+    },
+    preview: {
+      port: 4173,
     },
   });

@@ -8,7 +8,9 @@ import { AdminAuth } from './features/admin/components/AdminAuth';
 import { AdminDashboard } from './features/admin/components/AdminDashboard';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
+import { NotFound } from './pages/NotFound';
 import { SystemAlertModal } from './components/shared/SystemAlertModal';
+import { AlertProvider } from './context/AlertContext';
 import { getProfile, getAuthUser } from './lib/auth';
 import { getSummaries } from './lib/summaries';
 import { getCurrentUserId } from './lib/local-storage';
@@ -52,15 +54,10 @@ function App() {
   const [summaries, setSummaries] = useState<Summary[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [alert, setAlert] = useState<{
-    type: 'success' | 'error' | 'warning' | 'info';
-    title: string;
-    message: string;
-  } | null>(null);
 
-  const showAlert = (type: 'success' | 'error' | 'warning' | 'info', title: string, message: string) => {
-    setAlert({ type, title, message });
-  };
+  // Temporary stub kept for backwards compat — real alerts use useAlert() from AlertContext
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const showAlert = (_type: 'success' | 'error' | 'warning' | 'info', _title: string, _message: string) => {};
 
   useEffect(() => {
     // Check for admin session
@@ -158,8 +155,9 @@ function App() {
         showAlert,
       }}
     >
-      <ToastProvider>
-        <Router basename={(import.meta as any).env?.BASE_URL || '/'}>
+      <AlertProvider>
+        <ToastProvider>
+          <Router basename={(import.meta as any).env?.BASE_URL || '/'}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
@@ -174,17 +172,11 @@ function App() {
             <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
             <Route path="/admin/auth" element={isAdmin ? <Navigate to="/admin/dashboard" /> : <AdminAuth />} />
             <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
-        {alert && (
-          <SystemAlertModal
-            type={alert.type}
-            title={alert.title}
-            message={alert.message}
-            onClose={() => setAlert(null)}
-          />
-        )}
-      </ToastProvider>
+        </ToastProvider>
+      </AlertProvider>
     </AppContext.Provider>
   );
 }
