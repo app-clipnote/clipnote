@@ -1,7 +1,7 @@
 import type { User, Summary } from './types';
 
 const ADMIN_CREDENTIALS = {
-  email: 'admin@clipname.com',
+  email: 'admin@clipnote.com',
   password: 'Admin@123',
 };
 
