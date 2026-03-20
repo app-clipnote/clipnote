@@ -232,15 +232,15 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                 </button>
                 <div className="min-w-0">
                   <h1 className="text-xl md:text-2xl font-semibold mb-1 truncate">{selectedSummary.title}</h1>
-                  <a
-                    href={selectedSummary.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs md:text-sm text-primary hover:underline flex items-center gap-1 truncate"
-                  >
-                    <Link2 className="w-3.5 h-3.5" />
-                    {selectedSummary.url}
-                  </a>
+                    <a
+                      href={selectedSummary.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs md:text-sm text-primary hover:underline flex items-center gap-1.5 truncate bg-primary/5 px-3 py-1.5 rounded-full w-fit hover:bg-primary/10 transition-colors"
+                    >
+                      <Link2 className="w-3.5 h-3.5" />
+                      <span className="font-medium tracking-tight">Preview Link</span>
+                    </a>
                 </div>
               </div>
 

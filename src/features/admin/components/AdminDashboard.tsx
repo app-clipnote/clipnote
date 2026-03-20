@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, CreditCard, TrendingUp, Activity, Search, Download, MoreVertical, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { getAllUsers, getAllSummaries } from '../../../lib/admin-storage';
-import type { User as UserProfile } from '../../../types';
+import type { Profile as UserProfile } from '../../../types';
 import type { Summary } from '../../../types';
 
 export function AdminDashboard() {
@@ -29,12 +29,12 @@ export function AdminDashboard() {
     }).length,
     totalSummaries: summaries.length,
     revenue: users.reduce((acc, user) => {
-      if (user.plan === 'pro') return acc + 19;
-      if (user.plan === 'enterprise') return acc + 99;
+      if (user.plan === 'pro') return acc + 25000;
+      if (user.plan === 'pro-plus') return acc + 60000;
       return acc;
     }, 0),
     proUsers: users.filter(u => u.plan === 'pro').length,
-    enterpriseUsers: users.filter(u => u.plan === 'enterprise').length,
+    proPlusUsers: users.filter(u => u.plan === 'pro-plus').length,
     freeUsers: users.filter(u => u.plan === 'free').length,
   };
 
@@ -154,7 +154,7 @@ export function AdminDashboard() {
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground mb-1">Monthly Revenue</p>
-                <p className="text-3xl font-semibold">${stats.revenue}</p>
+                <p className="text-3xl font-semibold">₦{stats.revenue.toLocaleString()}</p>
               </div>
             </div>
 
@@ -197,16 +197,16 @@ export function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-sm">Enterprise Plan</span>
+                    <span className="text-sm">Pro+ Plan</span>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="w-64 h-2 bg-secondary rounded-full overflow-hidden">
                       <div
                         className="h-full bg-orange-500"
-                        style={{ width: `${(stats.enterpriseUsers / stats.totalUsers) * 100}%` }}
+                        style={{ width: `${(stats.proPlusUsers / stats.totalUsers) * 100}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium w-16 text-right">{stats.enterpriseUsers} users</span>
+                    <span className="text-sm font-medium w-16 text-right">{stats.proPlusUsers} users</span>
                   </div>
                 </div>
               </div>
@@ -229,13 +229,13 @@ export function AdminDashboard() {
                     </div>
                     <div className="text-right">
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                        user.plan === 'enterprise'
+                        user.plan === 'pro-plus'
                           ? 'bg-orange-100 text-orange-700'
                           : user.plan === 'pro'
                           ? 'bg-primary/10 text-primary'
                           : 'bg-green-100 text-green-700'
                       }`}>
-                        {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
+                        {user.plan === 'pro-plus' ? 'Pro+' : user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
                       </span>
                     </div>
                   </div>
@@ -290,13 +290,13 @@ export function AdminDashboard() {
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                            user.plan === 'enterprise'
+                            user.plan === 'pro-plus'
                               ? 'bg-orange-100 text-orange-700'
                               : user.plan === 'pro'
                               ? 'bg-primary/10 text-primary'
                               : 'bg-green-100 text-green-700'
                           }`}>
-                            {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
+                            {user.plan === 'pro-plus' ? 'Pro+' : user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
                           </span>
                         </td>
                         <td className="px-6 py-4">

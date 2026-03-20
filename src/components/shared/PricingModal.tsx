@@ -21,7 +21,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] p-4 backdrop-blur-md">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
       <div className="bg-background border border-border rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-8 border-b border-border/50 sticky top-0 bg-background z-10">
