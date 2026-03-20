@@ -21,7 +21,8 @@ import {
   ArrowDown,
   Sparkles,
   Star,
-  Quote
+  Quote,
+  Check
 } from 'lucide-react';
 import logoImage from 'figma:asset/93280cfc232010059111a5f16ed394e8480e436c.png';
 import { ThemeToggle } from '../../../components/shared/ThemeToggle';
@@ -596,7 +597,7 @@ export function LandingPage() {
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-3 text-sm font-medium">
                       <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <i className="ri-check-line text-primary text-xs font-bold" />
+                        <Check className="w-3 h-3 text-primary" strokeWidth={3} />
                       </div>
                       {feature}
                     </li>
@@ -638,7 +639,7 @@ export function LandingPage() {
                   ].map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm font-semibold">
                       <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
-                        <i className="ri-check-line text-white text-xs font-bold" />
+                        <Check className="w-3 h-3 text-white" strokeWidth={3} />
                       </div>
                       {feature}
                     </li>
@@ -679,7 +680,7 @@ export function LandingPage() {
                   ].map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm font-medium">
                       <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <i className="ri-check-line text-primary text-xs font-bold" />
+                        <Check className="w-3 h-3 text-primary" strokeWidth={3} />
                       </div>
                       {feature}
                     </li>

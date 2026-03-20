@@ -9,8 +9,9 @@ export function AuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const plan = searchParams.get('plan');
+  const mode = searchParams.get('mode');
   const { setNeedsOnboarding, reloadUser } = useApp();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(mode !== 'signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
