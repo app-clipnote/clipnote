@@ -54,8 +54,8 @@ export function AdminDashboard() {
   );
 
   const filteredHistory = summaries.filter(summary => 
-    summary.title.toLowerCase().includes(historySearchQuery.toLowerCase()) ||
-    summary.content.toLowerCase().includes(historySearchQuery.toLowerCase())
+    (summary.title || '').toLowerCase().includes(historySearchQuery.toLowerCase()) ||
+    (summary.summary || '').toLowerCase().includes(historySearchQuery.toLowerCase())
   ).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   const mainNavItems = [
@@ -482,7 +482,7 @@ export function AdminDashboard() {
                           <tr key={summary.id} className="hover:bg-white/[0.02] transition-colors group">
                             <td className="px-6 py-4 max-w-[300px] truncate">
                               <span className="font-medium text-gray-200 block truncate">{summary.title}</span>
-                              <span className="text-xs text-gray-500 block truncate mt-0.5">{summary.content || 'No content preview available'}</span>
+                              <span className="text-xs text-gray-500 block truncate mt-0.5">{summary.summary || 'No content preview available'}</span>
                             </td>
                             <td className="px-6 py-4">
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-widest ${
