@@ -1,4 +1,23 @@
-import type { User, Summary } from './types';
+import type { Profile as User, Summary } from '../types';
+import { getUsers, getSummariesByUserId } from './local-storage';
+
+// Helper to get all summaries since local-storage groups it by user id
+export function getAllSummariesHelper(): Summary[] {
+  const summariesStr = localStorage.getItem('ai_summarizer_summaries');
+  if (!summariesStr) return [];
+  try {
+    const rawData = JSON.parse(summariesStr);
+    const result: Summary[] = [];
+    Object.values(rawData).forEach((userSummaries: any) => {
+      Object.values(userSummaries).forEach((summary: any) => {
+        result.push(summary);
+      });
+    });
+    return result;
+  } catch (e) {
+    return [];
+  }
+}
 
 const ADMIN_CREDENTIALS = {
   email: 'admin@clipnote.com',
@@ -10,34 +29,10 @@ export function validateAdminLogin(email: string, password: string): boolean {
 }
 
 export function getAllUsers(): User[] {
-  const users: User[] = [];
-  
-  // Get all users from localStorage
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && key.startsWith('user_profile_')) {
-      const userStr = localStorage.getItem(key);
-      if (userStr) {
-        try {
-          users.push(JSON.parse(userStr));
-        } catch (e) {
-          console.error('Error parsing user:', e);
-        }
-      }
-    }
-  }
-  
-  return users;
+  const usersRecord = getUsers();
+  return Object.values(usersRecord);
 }
 
 export function getAllSummaries(): Summary[] {
-  const summariesStr = localStorage.getItem('summaries');
-  if (!summariesStr) return [];
-  
-  try {
-    return JSON.parse(summariesStr);
-  } catch (e) {
-    console.error('Error parsing summaries:', e);
-    return [];
-  }
+  return getAllSummariesHelper();
 }

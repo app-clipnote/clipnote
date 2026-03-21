@@ -45,27 +45,26 @@ export function Footer() {
           <div className="md:col-span-2">
             <h4 className="font-bold mb-6 text-white/60">Features</h4>
             <ul className="space-y-4 text-white/40 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Summaries</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Audio Text</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Dashboard</a></li>
+              <li><a href="/dashboard" className="hover:text-white transition-colors">Summaries</a></li>
+              <li><a href="/dashboard" className="hover:text-white transition-colors">Audio Text</a></li>
+              <li><a href="/dashboard" className="hover:text-white transition-colors">Dashboard</a></li>
             </ul>
           </div>
 
           <div className="md:col-span-2">
             <h4 className="font-bold mb-6 text-white/60">Support</h4>
             <ul className="space-y-4 text-white/40 text-sm">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a></li>
-              <li><a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
-              <li><a href="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</a></li>
+              <li><a href="/#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a></li>
+              <li><a href="/admin/auth" className="text-muted-foreground hover:text-primary transition-colors">Admin Portal</a></li>
+              <li><a href="mailto:support@clipnote.com" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</a></li>
             </ul>
           </div>
 
           <div className="md:col-span-2">
             <h4 className="font-bold mb-6 text-white/60">Legal</h4>
             <ul className="space-y-4 text-white/40 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Cookies</a></li>
+              <li><a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="hover:text-white transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>

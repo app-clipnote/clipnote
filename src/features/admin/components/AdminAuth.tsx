@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Mail, Lock, AlertCircle, ArrowLeft } from 'lucide-react';
 import { validateAdminLogin } from '../../../lib/admin-storage';
+import logoImage from '../../../assets/logoicon.png';
 
 export function AdminAuth() {
   const navigate = useNavigate();
@@ -48,9 +49,7 @@ export function AdminAuth() {
 
         {/* Logo/Header */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-            <Shield className="w-5 h-5 text-white" />
-          </div>
+          <img src={logoImage} alt="ClipNote Logo" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-bold tracking-tight">ClipNote</span>
           <span className="bg-primary/20 text-primary border border-primary/30 text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ml-2">
             Admin
@@ -77,9 +76,7 @@ export function AdminAuth() {
         {/* Mobile Header (Only visible on small screens) */}
         <div className="md:hidden w-full flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Shield className="w-4 h-4 text-white" />
-            </div>
+            <img src={logoImage} alt="ClipNote Logo" className="w-8 h-8 object-contain" />
             <span className="text-xl font-bold tracking-tight">Admin Portal</span>
           </div>
           <button onClick={() => navigate('/')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">

@@ -302,14 +302,6 @@ export function DashboardContent({ selectedSummaryId, onShowExport, onSummaryCre
                           <p className="mb-2 leading-relaxed">
                             {paragraph}
                           </p>
-                          <div className="flex gap-4 mt-2">
-                            <button className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                              <Volume2 className="w-3 h-3" /> Show Captions
-                            </button>
-                            <button className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                              <Globe className="w-3 h-3" /> Translate
-                            </button>
-                          </div>
                         </div>
                       </div>
                     ))}
