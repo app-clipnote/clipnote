@@ -10,17 +10,15 @@ export function AuthPage() {
   const [searchParams] = useSearchParams();
   const plan = searchParams.get('plan');
   const mode = searchParams.get('mode');
-  const { setNeedsOnboarding, reloadUser } = useApp();
+  const { setNeedsOnboarding, reloadUser, showAlert } = useApp();
   const [isLogin, setIsLogin] = useState(mode !== 'signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
     
     try {
@@ -36,7 +34,19 @@ export function AuthPage() {
         navigate(`/onboarding${plan ? `?plan=${plan}` : ''}`);
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred. Please try again.');
+      let errorMessage = err.message || 'An error occurred. Please try again.';
+      let errorTitle = 'Authentication Failed';
+
+      if (err.code === 'auth/email-already-in-use') {
+        errorTitle = 'Account Already Exists';
+        errorMessage = 'This email is already registered! Please look below the button and click "Log in here" to switch to the Login form.';
+      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+        errorMessage = 'Invalid email or password. Please try again.';
+      } else if (err.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with that email. Please create a new account.';
+      }
+
+      showAlert('error', errorTitle, errorMessage);
     } finally {
       setLoading(false);
     }
@@ -118,13 +128,6 @@ export function AuthPage() {
                 : 'Join ClipNote to start summarizing hours of content instantly.'}
             </p>
           </div>
-
-          {error && (
-            <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-xl flex items-start gap-3 fade-in">
-              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-              <p className="text-sm font-medium text-destructive">{error}</p>
-            </div>
-          )}
 
           {/* Social Logins (Mock) */}
           <div className="space-y-3 mb-8">
