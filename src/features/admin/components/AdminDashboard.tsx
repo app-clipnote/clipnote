@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, CreditCard, TrendingUp, Activity, Search, Download, MoreVertical, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, CreditCard, TrendingUp, Activity, Search, Download, MoreVertical, ArrowUpRight, LogOut, Moon, Sun } from 'lucide-react';
 import { getAllUsers, getAllSummaries } from '../../../lib/admin-storage';
 import type { Profile as UserProfile } from '../../../types';
 import type { Summary } from '../../../types';
@@ -46,24 +46,37 @@ export function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-white sticky top-0 z-50">
-        <div className="px-8 py-4">
+      <header className="border-b border-border bg-card sticky top-0 z-50">
+        <div className="px-4 md:px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Manage users and monitor platform activity</p>
+              <h1 className="text-xl md:text-2xl font-semibold leading-tight">Admin Dashboard</h1>
+              <p className="text-xs md:text-sm text-muted-foreground hidden sm:block">Manage users and monitor platform activity</p>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
-              <Download className="w-4 h-4" />
-              Export Data
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('admin_session');
+                  window.location.href = '/admin/auth';
+                }}
+                className="p-2 text-muted-foreground hover:bg-secondary rounded-xl transition-colors shrink-0"
+                title="Log Out"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+              <button className="flex items-center gap-2 px-3 md:px-4 py-2 bg-primary text-white text-sm md:text-base rounded-xl hover:bg-primary/90 transition-colors shrink-0">
+                <Download className="w-4 h-4 md:w-5 md:h-5" />
+                <span className="hidden sm:inline">Export Data</span>
+                <span className="sm:hidden">Export</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         {/* Tabs */}
-        <div className="flex gap-2 mb-8 border-b border-border">
+        <div className="flex gap-2 mb-8 border-b border-border overflow-x-auto scrollbar-none">
           <button
             onClick={() => setActiveTab('overview')}
             className={`px-6 py-3 border-b-2 transition-colors ${
@@ -100,66 +113,66 @@ export function AdminDashboard() {
         {activeTab === 'overview' && (
           <div className="space-y-8">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white border border-border rounded-2xl p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Users className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
+                    <Users className="w-6 h-6 text-blue-500" />
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-green-600">
+                  <div className="flex items-center gap-1 text-sm text-green-500">
                     <ArrowUpRight className="w-4 h-4" />
                     <span>12%</span>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground mb-1">Total Users</p>
-                <p className="text-3xl font-semibold">{stats.totalUsers}</p>
+                <p className="text-2xl md:text-3xl font-semibold">{stats.totalUsers}</p>
               </div>
 
-              <div className="bg-white border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                    <Activity className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
+                    <Activity className="w-6 h-6 text-green-500" />
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-green-600">
+                  <div className="flex items-center gap-1 text-sm text-green-500">
                     <ArrowUpRight className="w-4 h-4" />
                     <span>8%</span>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground mb-1">Active Users</p>
-                <p className="text-3xl font-semibold">{stats.activeUsers}</p>
+                <p className="text-2xl md:text-3xl font-semibold">{stats.activeUsers}</p>
               </div>
 
-              <div className="bg-white border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-purple-500" />
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-green-600">
+                  <div className="flex items-center gap-1 text-sm text-green-500">
                     <ArrowUpRight className="w-4 h-4" />
                     <span>24%</span>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground mb-1">Total Summaries</p>
-                <p className="text-3xl font-semibold">{stats.totalSummaries}</p>
+                <p className="text-2xl md:text-3xl font-semibold">{stats.totalSummaries}</p>
               </div>
 
-              <div className="bg-white border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                    <CreditCard className="w-6 h-6 text-orange-600" />
+                  <div className="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center">
+                    <CreditCard className="w-6 h-6 text-orange-500" />
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-green-600">
+                  <div className="flex items-center gap-1 text-sm text-green-500">
                     <ArrowUpRight className="w-4 h-4" />
                     <span>18%</span>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground mb-1">Monthly Revenue</p>
-                <p className="text-3xl font-semibold">₦{stats.revenue.toLocaleString()}</p>
+                <p className="text-2xl md:text-3xl font-semibold">₦{stats.revenue.toLocaleString()}</p>
               </div>
             </div>
 
             {/* Subscription Breakdown */}
-            <div className="bg-white border border-border rounded-2xl p-6">
+            <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
               <h2 className="text-lg font-semibold mb-6">Subscription Breakdown</h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -213,7 +226,7 @@ export function AdminDashboard() {
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white border border-border rounded-2xl p-6">
+            <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
               <h2 className="text-lg font-semibold mb-6">Recent Signups</h2>
               <div className="space-y-4">
                 {users.slice(0, 5).reverse().map((user) => (
@@ -256,13 +269,14 @@ export function AdminDashboard() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search users..."
-                className="w-full pl-12 pr-4 py-3 bg-white border border-border rounded-xl outline-none focus:border-primary transition-colors"
+                className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-xl outline-none focus:border-primary transition-colors"
               />
             </div>
 
             {/* Users Table */}
-            <div className="bg-white border border-border rounded-2xl overflow-hidden">
-              <table className="w-full">
+            <div className="bg-card border border-border rounded-2xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full whitespace-nowrap">
                 <thead className="bg-secondary border-b border-border">
                   <tr>
                     <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">User</th>
@@ -317,6 +331,7 @@ export function AdminDashboard() {
                   })}
                 </tbody>
               </table>
+             </div>
             </div>
           </div>
         )}
@@ -326,7 +341,7 @@ export function AdminDashboard() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Content Type Distribution */}
-              <div className="bg-white border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
                 <h2 className="text-lg font-semibold mb-6">Content Type Distribution</h2>
                 <div className="space-y-4">
                   {['youtube', 'audio', 'url'].map((type) => {
@@ -351,7 +366,7 @@ export function AdminDashboard() {
               </div>
 
               {/* User Activity */}
-              <div className="bg-white border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
                 <h2 className="text-lg font-semibold mb-6">Top Active Users</h2>
                 <div className="space-y-4">
                   {users

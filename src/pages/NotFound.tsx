@@ -1,8 +1,20 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, ArrowLeft, Search } from 'lucide-react';
 
-export function NotFound() {
+interface ErrorPageProps {
+  code?: number | string;
+  title?: string;
+  message?: string;
+}
+
+export function NotFound({ code, title, message }: ErrorPageProps = {}) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as ErrorPageProps | null;
+
+  const displayCode = code || state?.code || 404;
+  const displayTitle = title || state?.title || "Page not found";
+  const displayMessage = message || state?.message || "Looks like this page took a detour. The URL may be wrong, or the page may have been moved or deleted.";
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 relative overflow-hidden">
@@ -13,10 +25,10 @@ export function NotFound() {
       </div>
 
       <div className="relative z-10 text-center max-w-lg mx-auto">
-        {/* 404 Number */}
+        {/* Error Code */}
         <div className="relative mb-6">
           <p className="text-[10rem] sm:text-[14rem] font-black leading-none text-transparent bg-clip-text bg-gradient-to-b from-foreground/20 to-foreground/5 select-none">
-            404
+            {displayCode}
           </p>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20">
@@ -27,11 +39,10 @@ export function NotFound() {
 
         {/* Message */}
         <h1 className="text-2xl sm:text-3xl font-bold mb-3 tracking-tight">
-          Page not found
+          {displayTitle}
         </h1>
         <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-10">
-          Looks like this page took a detour. The URL may be wrong, or the page
-          may have been moved or deleted.
+          {displayMessage}
         </p>
 
         {/* Actions */}
