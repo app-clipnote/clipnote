@@ -13,7 +13,6 @@ import { SystemAlertModal } from './components/shared/SystemAlertModal';
 import { AlertProvider, useAlert } from './context/AlertContext';
 import { getProfile, getAuthUser } from './lib/auth';
 import { getSummaries } from './lib/summaries';
-import { getCurrentUserId } from './lib/local-storage';
 import { initializeTheme } from './lib/theme';
 import { ToastProvider } from './context/ToastContext';
 import type { Summary } from './types';
@@ -79,20 +78,19 @@ function AppContent() {
   };
 
   const reloadUser = async () => {
-    const userId = getCurrentUserId();
-    if (userId) {
-      await loadUserData(userId);
+    const authUser = await getAuthUser();
+    if (authUser?.id) {
+      await loadUserData(authUser?.id);
     }
   };
 
   useEffect(() => {
-    // Check for existing session in localStorage
     const initAuth = async () => {
       try {
-        const userId = getCurrentUserId();
+        const authUser = await getAuthUser();
         
-        if (userId) {
-          await loadUserData(userId);
+        if (authUser?.id) {
+          await loadUserData(authUser.id);
         } else {
           setLoading(false);
         }

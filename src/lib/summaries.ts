@@ -1,11 +1,6 @@
-import {
-  generateId,
-  saveSummary as saveToStorage,
-  getSummariesByUserId,
-  getSummaryById,
-  deleteSummaryById,
-} from './local-storage';
-import type { Summary } from './types';
+import { db } from './firebase';
+import { collection, addDoc, getDocs, getDoc, doc, deleteDoc, query, where } from 'firebase/firestore';
+import type { Summary } from '../types';
 
 export async function createSummary(
   userId: string,
@@ -16,8 +11,7 @@ export async function createSummary(
 ) {
   const now = new Date().toISOString();
   
-  const newSummary: Summary = {
-    id: generateId(),
+  const newSummary = {
     user_id: userId,
     url,
     title,
@@ -27,13 +21,22 @@ export async function createSummary(
     updated_at: now,
   };
 
-  saveToStorage(newSummary);
-  return newSummary;
+  const docRef = await addDoc(collection(db, "summaries"), newSummary);
+  
+  return {
+    id: docRef.id,
+    ...newSummary
+  } as Summary;
 }
 
 export async function getSummaries(userId: string): Promise<Summary[]> {
   try {
-    return getSummariesByUserId(userId);
+    const q = query(collection(db, "summaries"), where("user_id", "==", userId));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id
+    })) as Summary[];
   } catch (error) {
     console.error('Error fetching summaries:', error);
     return [];
@@ -42,7 +45,12 @@ export async function getSummaries(userId: string): Promise<Summary[]> {
 
 export async function getSummary(summaryId: string): Promise<Summary | null> {
   try {
-    return getSummaryById(summaryId);
+    const docRef = doc(db, "summaries", summaryId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Summary;
+    }
+    return null;
   } catch (error) {
     console.error('Error fetching summary:', error);
     return null;
@@ -50,5 +58,9 @@ export async function getSummary(summaryId: string): Promise<Summary | null> {
 }
 
 export async function deleteSummary(summaryId: string) {
-  deleteSummaryById(summaryId);
+  try {
+    await deleteDoc(doc(db, "summaries", summaryId));
+  } catch (error) {
+    console.error('Error deleting summary:', error);
+  }
 }

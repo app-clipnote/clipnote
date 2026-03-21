@@ -11,6 +11,10 @@ import {
 } from 'recharts';
 import { getAllUsers, getAllSummaries } from '../../../lib/admin-storage';
 import type { Profile as UserProfile, Summary } from '../../../types';
+import logoImage from '../../../assets/logoicon.png';
+import { storage, db } from '../../../lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 export function AdminDashboard() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -19,16 +23,46 @@ export function AdminDashboard() {
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'analytics' | 'history' | 'settings'>('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [adminAvatar, setAdminAvatar] = useState('https://api.dicebear.com/7.x/avataaars/svg?seed=Admin');
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const loadData = () => {
-    const allUsers = getAllUsers();
-    const allSummaries = getAllSummaries();
+  const loadData = async () => {
+    const allUsers = await getAllUsers();
+    const allSummaries = await getAllSummaries();
     setUsers(allUsers);
     setSummaries(allSummaries);
+
+    try {
+      const adminDoc = await getDoc(doc(db, "admins", "main_admin"));
+      if (adminDoc.exists() && adminDoc.data().avatar_url) {
+        setAdminAvatar(adminDoc.data().avatar_url);
+      }
+    } catch (e) {
+      console.error("Failed to load admin profile:", e);
+    }
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const storageRef = ref(storage, `avatars/admin_${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      
+      await setDoc(doc(db, "admins", "main_admin"), { avatar_url: url }, { merge: true });
+      setAdminAvatar(url);
+    } catch (error) {
+      console.error("Avatar upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const stats = {
@@ -96,7 +130,7 @@ export function AdminDashboard() {
         <div className="p-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3 p-1 overflow-hidden">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-               <img src="/logoicon.png" alt="ClipNote Logo" className="w-full h-full object-contain" />
+               <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
             </div>
             {isSidebarOpen && (
               <div className="flex-1 overflow-hidden whitespace-nowrap">
@@ -172,7 +206,7 @@ export function AdminDashboard() {
           <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'justify-center'} overflow-hidden`}>
              <div className="flex items-center gap-3 overflow-hidden">
                 <div className="w-10 h-10 rounded-full bg-[#222] border border-white/5 flex items-center justify-center shrink-0 overflow-hidden">
-                   <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="Admin" className="w-full h-full object-cover" />
+                   <img src={adminAvatar} alt="Admin" className="w-full h-full object-cover" />
                 </div>
                 {isSidebarOpen && (
                   <div className="flex-1 overflow-hidden">
@@ -203,7 +237,7 @@ export function AdminDashboard() {
         <header className="md:hidden border-b border-white/5 bg-[#121212] flex items-center justify-between p-4 sticky top-0 z-50">
            <div className="flex items-center gap-2">
              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                 <img src="/logoicon.png" alt="ClipNote Logo" className="w-6 h-6 object-contain" />
+                 <img src={logoImage} alt="ClipNote Logo" className="w-6 h-6 object-contain" />
              </div>
              <span className="font-semibold text-white">ClipNote Admin</span>
            </div>
@@ -586,7 +620,34 @@ export function AdminDashboard() {
               {/* Profile Settings */}
               <div className="bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6 lg:p-8">
                 <h2 className="text-lg font-medium text-white mb-6">Profile Settings</h2>
-                <form className="space-y-5">
+                <form className="space-y-6">
+                  {/* Avatar Upload */}
+                  <div className="flex flex-col gap-3">
+                     <label className="text-xs font-semibold text-gray-400 tracking-wider uppercase">Profile Avatar</label>
+                     <div className="flex items-center gap-4">
+                       <div className="w-16 h-16 rounded-full bg-[#222] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                         {isUploading ? (
+                           <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                         ) : (
+                           <img src={adminAvatar} alt="Admin Avatar" className="object-cover w-full h-full" />
+                         )}
+                       </div>
+                       <div className="flex flex-col gap-2">
+                         <div className="flex items-center gap-2">
+                           <label className={`cursor-pointer px-4 py-2 ${isUploading ? 'bg-white/5 opacity-50' : 'bg-white/5 hover:bg-white/10'} border border-white/10 text-white text-sm rounded-xl transition-all font-medium`}>
+                             {isUploading ? 'Uploading...' : 'Upload Image'}
+                             <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
+                           </label>
+                           {!isUploading && (
+                             <button type="button" onClick={() => setAdminAvatar('https://api.dicebear.com/7.x/avataaars/svg?seed=Admin')} className="px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl text-sm transition-all font-medium">
+                               Remove
+                             </button>
+                           )}
+                         </div>
+                         <p className="text-[11px] text-gray-500">Suggested: 400x400px. Max size: 2MB.</p>
+                       </div>
+                     </div>
+                  </div>
                   <div className="flex flex-col gap-1.5">
                      <label className="text-xs font-semibold text-gray-400 tracking-wider uppercase">Full Name</label>
                      <input 

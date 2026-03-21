@@ -1,43 +1,46 @@
-import {
-  generateId,
-  getUserByEmail,
-  getUserById,
-  saveUser,
-  setCurrentUser,
-  getCurrentUser,
-  createDefaultSettings,
-} from './local-storage';
+import { auth, db } from './firebase';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut as firebaseSignOut,
+  onAuthStateChanged
+} from 'firebase/auth';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import type { Profile } from '../types';
 
 export async function signUp(email: string, password: string, name: string) {
-  // Check if user already exists
-  const existingUser = getUserByEmail(email);
-  if (existingUser) {
-    throw new Error('User with this email already exists');
-  }
-
-  // Create new user
-  const userId = generateId();
+  // 1. Create user in Firebase Auth
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+  
   const now = new Date().toISOString();
   
   const newUser: Profile = {
-    id: userId,
+    id: user.uid,
     email,
     name,
-    password, // In production, this should be hashed
+    password: '', // Do not store passwords in Firestore
     plan: 'free',
     created_at: now,
     updated_at: now,
   };
 
-  // Save user
-  saveUser(newUser);
+  // 2. Save profile in Firestore "users" collection
+  await setDoc(doc(db, "users", user.uid), newUser);
   
-  // Create default settings
-  createDefaultSettings(userId);
-  
-  // Set as current user
-  setCurrentUser(userId);
+  // 3. Create default settings
+  const defaultSettings = {
+    id: user.uid,
+    user_id: user.uid,
+    language: 'en',
+    email_notifications: true,
+    summary_complete_notifications: true,
+    weekly_digest: false,
+    theme: 'dark',
+    created_at: now,
+    updated_at: now,
+  };
+  await setDoc(doc(db, "user_settings", user.uid), defaultSettings);
 
   return {
     user: {
@@ -48,66 +51,59 @@ export async function signUp(email: string, password: string, name: string) {
 }
 
 export async function signIn(email: string, password: string) {
-  const user = getUserByEmail(email);
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
   
-  if (!user) {
-    throw new Error('Invalid email or password');
-  }
-
-  if (user.password !== password) {
-    throw new Error('Invalid email or password');
-  }
-
-  // Set as current user
-  setCurrentUser(user.id);
-
   return {
     user: {
-      id: user.id,
-      email: user.email,
+      id: userCredential.user.uid,
+      email: userCredential.user.email as string,
     },
   };
 }
 
 export async function signOut() {
-  setCurrentUser(null);
+  await firebaseSignOut(auth);
+  localStorage.removeItem('ai_summarizer_current_user'); 
 }
 
-export async function getAuthUser() {
-  const user = getCurrentUser();
-  return user ? { id: user.id, email: user.email } : null;
+export function getAuthUser(): Promise<{id: string, email: string} | null> {
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      if (user) {
+        resolve({ id: user.uid, email: user.email as string });
+      } else {
+        resolve(null);
+      }
+    });
+  });
 }
 
-export async function getProfile(userId: string) {
-  const user = getUserById(userId);
+export async function getProfile(userId: string): Promise<Omit<Profile, 'password'>> {
+  const userDoc = await getDoc(doc(db, "users", userId));
   
-  if (!user) {
+  if (!userDoc.exists()) {
     throw new Error('User not found');
   }
 
-  // Return profile without password
-  const { password, ...profile } = user;
-  return profile;
+  const profile = userDoc.data() as Profile;
+  const { password, ...safeProfile } = profile;
+  return safeProfile;
 }
 
 export async function updateProfile(
   userId: string,
   updates: { name?: string; email?: string; plan?: 'free' | 'pro' | 'pro-plus' | 'enterprise' }
 ) {
-  const user = getUserById(userId);
-  
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  const updatedUser: Profile = {
-    ...user,
+  const userRef = doc(db, "users", userId);
+  const updatedData = {
     ...updates,
-    updated_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
+  await updateDoc(userRef, updatedData);
 
-  saveUser(updatedUser);
-
-  const { password, ...profile } = updatedUser;
-  return profile;
+  const newDoc = await getDoc(userRef);
+  const profile = newDoc.data() as Profile;
+  const { password, ...safeProfile } = profile;
+  return safeProfile;
 }

@@ -17,7 +17,7 @@ export function AdminAuth() {
     setIsLoading(true);
 
     try {
-      const isValid = validateAdminLogin(email, password);
+      const isValid = await validateAdminLogin(email, password);
       
       if (isValid) {
         // Store admin session
@@ -162,9 +162,6 @@ export function AdminAuth() {
           <div className="mt-8 text-center border-t border-border/50 pt-8">
             <p className="text-sm font-medium text-muted-foreground">
               Authorized access only. By logging in, you agree to secure monitoring.
-            </p>
-            <p className="text-xs font-mono bg-secondary/50 rounded-md py-2 mt-4 text-muted-foreground opacity-60">
-              admin@clipnote.com / Admin@123
             </p>
           </div>
         </div>
