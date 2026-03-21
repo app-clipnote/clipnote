@@ -6,8 +6,7 @@ import {
   Settings, Home, FileText, Menu, ChevronLeft, History, ArrowLeft
 } from 'lucide-react';
 import { 
-  PieChart, Pie, Cell, ResponsiveContainer, Tooltip, 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend 
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip 
 } from 'recharts';
 import { getAllUsers, getAllSummaries } from '../../../lib/admin-storage';
 import type { Profile as UserProfile, Summary } from '../../../types';
@@ -60,6 +59,7 @@ export function AdminDashboard() {
       setAdminAvatar(url);
     } catch (error) {
       console.error("Avatar upload failed:", error);
+      alert("Image upload failed! Please ensure your Firebase Storage rules are set to enable read/write.");
     } finally {
       setIsUploading(false);
     }
@@ -104,23 +104,20 @@ export function AdminDashboard() {
   ] as const;
 
   // Recharts Data
-  const PIE_COLORS = ['#ef4444', '#3b82f6', '#10b981']; 
   const sourceData = [
     { name: 'YouTube', value: summaries.filter(s => s.type === 'youtube').length },
     { name: 'Audio', value: summaries.filter(s => s.type === 'audio').length },
     { name: 'URL', value: summaries.filter(s => s.type === 'url').length },
-  ].filter(d => d.value > 0);
-
-  // Growth Data Mock for BarChart
-  const activityData = [
-    { name: 'Mon', summaries: Math.floor(summaries.length * 0.1) || 12 },
-    { name: 'Tue', summaries: Math.floor(summaries.length * 0.15) || 19 },
-    { name: 'Wed', summaries: Math.floor(summaries.length * 0.05) || 15 },
-    { name: 'Thu', summaries: Math.floor(summaries.length * 0.2) || 22 },
-    { name: 'Fri', summaries: Math.floor(summaries.length * 0.25) || 29 },
-    { name: 'Sat', summaries: Math.floor(summaries.length * 0.1) || 32 },
-    { name: 'Sun', summaries: Math.floor(summaries.length * 0.15) || 35 },
   ];
+
+  // Dynamic Growth Data (Last 7 Days)
+  const activityData = [...Array(7)].map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    const dayStr = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const daySummaries = summaries.filter(s => new Date(s.created_at).toDateString() === d.toDateString());
+    return { name: dayStr, summaries: daySummaries.length };
+  });
 
   return (
     <div className="flex h-screen bg-[#0A0A0B] text-gray-100 font-sans overflow-hidden">
@@ -561,29 +558,17 @@ export function AdminDashboard() {
                 <div className="bg-[#1A1A1A]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6 lg:p-8 flex flex-col">
                   <h2 className="text-lg font-medium text-white mb-6">Source Analytics</h2>
                   <div className="flex-1 flex items-center justify-center min-h-[300px]">
-                     {sourceData.length > 0 ? (
+                     {sourceData.some(d => d.value > 0) ? (
                         <ResponsiveContainer width="100%" height={300}>
-                          <PieChart>
-                            <Pie
-                              data={sourceData}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={70}
-                              outerRadius={100}
-                              paddingAngle={5}
-                              dataKey="value"
-                              stroke="none"
-                            >
-                              {sourceData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                              ))}
-                            </Pie>
+                          <LineChart data={sourceData} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                            <XAxis dataKey="name" stroke="#888" tick={{ fill: '#888', fontSize: 12 }} axisLine={false} tickLine={false} />
+                            <YAxis stroke="#888" tick={{ fill: '#888', fontSize: 12 }} axisLine={false} tickLine={false} />
                             <Tooltip 
-                              contentStyle={{ backgroundColor: '#121212', borderColor: '#333', borderRadius: '12px', color: '#fff' }}
-                              itemStyle={{ color: '#fff' }}
+                              contentStyle={{ backgroundColor: '#121212', borderColor: '#333', borderRadius: '12px', color: '#fff' }} 
                             />
-                            <Legend verticalAlign="bottom" height={36} wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }}/>
-                          </PieChart>
+                            <Line type="monotone" dataKey="value" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} activeDot={{ r: 6 }} />
+                          </LineChart>
                         </ResponsiveContainer>
                      ) : (
                         <p className="text-gray-500 text-sm">Not enough data to generate charts.</p>

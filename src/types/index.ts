@@ -5,6 +5,7 @@ export interface Profile {
   name: string;
   plan: 'free' | 'pro' | 'pro-plus' | 'enterprise';
   password: string; // Stored locally (in production, this would be hashed)
+  avatar?: string;
   created_at: string;
   updated_at: string;
 }

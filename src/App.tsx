@@ -111,6 +111,7 @@ function AppContent() {
         email: profile.email,
         name: profile.name,
         plan: profile.plan,
+        avatar: profile.avatar,
       });
 
       // Load summaries

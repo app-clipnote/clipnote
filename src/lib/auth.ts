@@ -93,7 +93,7 @@ export async function getProfile(userId: string): Promise<Omit<Profile, 'passwor
 
 export async function updateProfile(
   userId: string,
-  updates: { name?: string; email?: string; plan?: 'free' | 'pro' | 'pro-plus' | 'enterprise' }
+  updates: { name?: string; email?: string; plan?: 'free' | 'pro' | 'pro-plus' | 'enterprise'; avatar?: string }
 ) {
   const userRef = doc(db, "users", userId);
   const updatedData = {

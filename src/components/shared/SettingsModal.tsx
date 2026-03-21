@@ -4,6 +4,9 @@ import { useApp } from '../../App';
 import { updateProfile } from '../../lib/auth';
 import { getSettings, updateSettings } from '../../lib/settings';
 import { PricingModal } from './PricingModal';
+import { setTheme, applyTheme } from '../../lib/theme';
+import { storage } from '../../lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -15,7 +18,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(document.documentElement.classList.contains('dark'));
   const [avatar, setAvatar] = useState(user?.avatar || '');
   const [loading, setLoading] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
@@ -46,7 +49,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     setLoading(true);
     try {
       // Update profile
-      await updateProfile(user.id, { name, email });
+      await updateProfile(user.id, { name, email, avatar });
       
       // Update settings
       await updateSettings(user.id, {
@@ -55,13 +58,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       });
 
       // Apply theme immediately
-      if (darkMode) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      }
+      setTheme(darkMode ? 'dark' : 'light');
       
       setUser({ ...user, name, email, avatar });
       onClose();
@@ -140,14 +137,21 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                         type="file"
                         className="hidden"
                         accept="image/*"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
-                          if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setAvatar(reader.result as string);
-                            };
-                            reader.readAsDataURL(file);
+                          if (file && user) {
+                            try {
+                              setLoading(true);
+                              const storageRef = ref(storage, `avatars/user_${user.id}_${Date.now()}`);
+                              await uploadBytes(storageRef, file);
+                              const url = await getDownloadURL(storageRef);
+                              setAvatar(url);
+                            } catch (err) {
+                              console.error("Avatar upload failed:", err);
+                              alert("Upload failed. Make sure Firebase Storage Rules are set to allow reads/writes!");
+                            } finally {
+                              setLoading(false);
+                            }
                           }
                         }}
                       />

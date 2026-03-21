@@ -1,6 +1,6 @@
 export type Theme = 'light' | 'dark';
 
-const THEME_KEY = 'clipname_theme';
+const THEME_KEY = 'theme';
 
 export function getTheme(): Theme {
   const stored = localStorage.getItem(THEME_KEY);
