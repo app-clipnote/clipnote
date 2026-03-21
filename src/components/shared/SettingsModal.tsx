@@ -21,6 +21,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const [darkMode, setDarkMode] = useState(document.documentElement.classList.contains('dark'));
   const [avatar, setAvatar] = useState(user?.avatar || '');
   const [loading, setLoading] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
 
 
@@ -125,7 +126,9 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                 <div className="flex flex-col items-center mb-8">
                   <div className="relative group">
                     <div className="w-24 h-24 rounded-full overflow-hidden bg-secondary flex items-center justify-center border-2 border-border group-hover:border-primary transition-colors">
-                      {avatar ? (
+                      {isUploadingAvatar ? (
+                        <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+                      ) : avatar ? (
                         <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
                       ) : (
                         <User className="w-10 h-10 text-muted-foreground" />
@@ -141,16 +144,17 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                           const file = e.target.files?.[0];
                           if (file && user) {
                             try {
-                              setLoading(true);
+                              setIsUploadingAvatar(true);
                               const storageRef = ref(storage, `avatars/user_${user.id}_${Date.now()}`);
                               await uploadBytes(storageRef, file);
                               const url = await getDownloadURL(storageRef);
                               setAvatar(url);
                             } catch (err) {
                               console.error("Avatar upload failed:", err);
-                              alert("Upload failed. Make sure Firebase Storage Rules are set to allow reads/writes!");
+                              alert("Upload failed. Make sure Firebase Storage Rules permit uploads.");
                             } finally {
-                              setLoading(false);
+                              setIsUploadingAvatar(false);
+                              e.target.value = '';
                             }
                           }
                         }}

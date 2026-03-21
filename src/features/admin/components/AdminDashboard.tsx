@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 import { 
   Users, CreditCard, TrendingUp, Activity, Search, 
   Download, MoreVertical, ArrowUpRight, LogOut, 
-  Settings, Home, FileText, Menu, ChevronLeft, History, ArrowLeft
+  Settings, Home, FileText, Menu, ChevronLeft, History, ArrowLeft, Trash2, Eye
 } from 'lucide-react';
+import { deleteDoc } from 'firebase/firestore';
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip 
 } from 'recharts';
 import { getAllUsers, getAllSummaries } from '../../../lib/admin-storage';
 import type { Profile as UserProfile, Summary } from '../../../types';
-import logoImage from '../../../assets/logoicon.png';
+import logoIcon from '../../../assets/logoicon.png'; // Verified path: src/assets/logoicon.png
 import { storage, db } from '../../../lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
@@ -20,10 +21,22 @@ export function AdminDashboard() {
   const [summaries, setSummaries] = useState<Summary[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [historySearchQuery, setHistorySearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'analytics' | 'history' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'analytics' | 'history' | 'settings'>(
+    (localStorage.getItem('admin_active_tab') as any) || 'overview'
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [adminAvatar, setAdminAvatar] = useState('https://api.dicebear.com/7.x/avataaars/svg?seed=Admin');
+  const [adminName, setAdminName] = useState('Administrator');
   const [isUploading, setIsUploading] = useState(false);
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [userFilter, setUserFilter] = useState('all');
+  const [historyFilter, setHistoryFilter] = useState('all');
+
+  useEffect(() => {
+    localStorage.setItem('admin_active_tab', activeTab);
+  }, [activeTab]);
 
   useEffect(() => {
     loadData();
@@ -37,8 +50,9 @@ export function AdminDashboard() {
 
     try {
       const adminDoc = await getDoc(doc(db, "admins", "main_admin"));
-      if (adminDoc.exists() && adminDoc.data().avatar_url) {
-        setAdminAvatar(adminDoc.data().avatar_url);
+      if (adminDoc.exists()) {
+        if (adminDoc.data().avatar_url) setAdminAvatar(adminDoc.data().avatar_url);
+        if (adminDoc.data().name) setAdminName(adminDoc.data().name);
       }
     } catch (e) {
       console.error("Failed to load admin profile:", e);
@@ -62,6 +76,75 @@ export function AdminDashboard() {
       alert("Image upload failed! Please ensure your Firebase Storage rules are set to enable read/write.");
     } finally {
       setIsUploading(false);
+      // Reset input value to allow re-uploading same file
+      event.target.value = '';
+    }
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setIsUpdatingProfile(true);
+      await setDoc(doc(db, "admins", "main_admin"), { 
+        name: adminName,
+        updated_at: new Date().toISOString()
+      }, { merge: true });
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      alert("Failed to update profile. Please check your connection.");
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
+  const handleSavePreferences = async () => {
+    try {
+      setIsUpdatingProfile(true);
+      await setDoc(doc(db, "admins", "main_admin"), { 
+        preferences: {
+          email_notifications: true,
+          security_alerts: true,
+          system_updates: false
+        },
+        updated_at: new Date().toISOString()
+      }, { merge: true });
+      alert("Preferences saved successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save preferences.");
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user? All their summaries will remain but their account will be removed.")) return;
+    try {
+      setIsDeleting(userId);
+      await deleteDoc(doc(db, "users", userId));
+      setUsers(users.filter(u => u.id !== userId));
+      alert("User deleted successfully.");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to delete user.");
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  const handleDeleteSummary = async (summaryId: string) => {
+    if (!confirm("Are you sure you want to delete this summary?")) return;
+    try {
+      setIsDeleting(summaryId);
+      await deleteDoc(doc(db, "summaries", summaryId));
+      setSummaries(summaries.filter(s => s.id !== summaryId));
+      alert("Summary deleted successfully.");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to delete summary.");
+    } finally {
+      setIsDeleting(null);
     }
   };
 
@@ -82,15 +165,40 @@ export function AdminDashboard() {
     freeUsers: users.filter(u => u.plan === 'free').length,
   };
 
-  const filteredUsers = users.filter(user =>
-    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         user.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = userFilter === 'all' || user.plan === userFilter;
+    return matchesSearch && matchesFilter;
+  });
 
-  const filteredHistory = summaries.filter(summary => 
-    (summary.title || '').toLowerCase().includes(historySearchQuery.toLowerCase()) ||
-    (summary.summary || '').toLowerCase().includes(historySearchQuery.toLowerCase())
-  ).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  const filteredHistory = summaries.filter(summary => {
+    const matchesSearch = (summary.title || '').toLowerCase().includes(historySearchQuery.toLowerCase()) ||
+                         (summary.summary || '').toLowerCase().includes(historySearchQuery.toLowerCase());
+    const matchesFilter = historyFilter === 'all' || summary.type === historyFilter;
+    return matchesSearch && matchesFilter;
+  }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  const exportToCSV = () => {
+    const headers = ['Name', 'Email', 'Plan', 'Joined'];
+    const rows = filteredUsers.map(u => [
+      u.name,
+      u.email,
+      u.plan,
+      new Date(u.created_at).toISOString()
+    ]);
+    
+    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `clipnote_users_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const mainNavItems = [
     { id: 'overview', label: 'Overview', icon: Home },
@@ -127,7 +235,7 @@ export function AdminDashboard() {
         <div className="p-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3 p-1 overflow-hidden">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-               <img src={logoImage} alt="ClipNote Logo" className="w-full h-full object-contain" />
+               <img src={logoIcon} alt="ClipNote Logo" className="w-full h-full object-contain" />
             </div>
             {isSidebarOpen && (
               <div className="flex-1 overflow-hidden whitespace-nowrap">
@@ -207,17 +315,14 @@ export function AdminDashboard() {
                 </div>
                 {isSidebarOpen && (
                   <div className="flex-1 overflow-hidden">
-                    <h3 className="text-sm font-medium text-white truncate">Administrator</h3>
+                    <h3 className="text-sm font-medium text-white truncate">{adminName}</h3>
                     <p className="text-xs text-gray-500 truncate">admin@clipnote.ai</p>
                   </div>
                 )}
              </div>
             {isSidebarOpen && (
               <button 
-                onClick={() => {
-                  localStorage.removeItem('admin_session');
-                  window.location.href = '/admin/auth';
-                }}
+                onClick={() => setShowLogoutConfirm(true)}
                 className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors shrink-0"
                 title="Log Out"
               >
@@ -234,7 +339,7 @@ export function AdminDashboard() {
         <header className="md:hidden border-b border-white/5 bg-[#121212] flex items-center justify-between p-4 sticky top-0 z-50">
            <div className="flex items-center gap-2">
              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                 <img src={logoImage} alt="ClipNote Logo" className="w-6 h-6 object-contain" />
+                 <img src={logoIcon} alt="ClipNote Logo" className="w-6 h-6 object-contain" />
              </div>
              <span className="font-semibold text-white">ClipNote Admin</span>
            </div>
@@ -244,10 +349,7 @@ export function AdminDashboard() {
                 <ArrowLeft className="w-5 h-5" />
              </Link>
              <button 
-               onClick={() => {
-                  localStorage.removeItem('admin_session');
-                  window.location.href = '/admin/auth';
-                }}
+               onClick={() => setShowLogoutConfirm(true)}
                 className="p-2 text-gray-500 hover:bg-white/10 rounded-lg"
               >
                 <LogOut className="w-5 h-5" />
@@ -407,8 +509,22 @@ export function AdminDashboard() {
                     className="w-full pl-9 pr-4 py-2 bg-[#121212] border border-white/5 rounded-xl text-sm outline-none focus:border-white/20 transition-colors text-white placeholder-gray-500"
                   />
                 </div>
-                <button className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm rounded-xl transition-all">
-                  Filter
+                <select
+                  value={userFilter}
+                  onChange={(e) => setUserFilter(e.target.value)}
+                  className="px-4 py-2 bg-[#121212] border border-white/10 text-white text-sm rounded-xl outline-none focus:border-primary transition-colors cursor-pointer"
+                >
+                  <option value="all">All Plans</option>
+                  <option value="free">Free</option>
+                  <option value="pro">Pro</option>
+                  <option value="pro-plus">Pro+</option>
+                </select>
+                <button 
+                  onClick={exportToCSV}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm rounded-xl transition-all"
+                >
+                  <Download className="w-4 h-4" />
+                  Export CSV
                 </button>
               </div>
               <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
@@ -456,11 +572,24 @@ export function AdminDashboard() {
                             <td className="px-6 py-4 text-gray-500 text-xs">
                               {new Date(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                             </td>
-                            <td className="px-6 py-4 text-right">
-                              <button className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Manage User">
-                                <MoreVertical className="w-4 h-4" />
-                              </button>
-                            </td>
+                             <td className="px-6 py-4 text-right">
+                               <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                 <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="View User Details">
+                                   <Eye className="w-4 h-4" />
+                                 </button>
+                                 <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="Edit User">
+                                   <Settings className="w-4 h-4" />
+                                 </button>
+                                 <button 
+                                   onClick={() => handleDeleteUser(user.id)}
+                                   disabled={isDeleting === user.id}
+                                   className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50" 
+                                   title="Delete User"
+                                  >
+                                   <Trash2 className="w-4 h-4" />
+                                 </button>
+                               </div>
+                             </td>
                           </tr>
                         );
                       })
@@ -490,9 +619,16 @@ export function AdminDashboard() {
                     className="w-full pl-9 pr-4 py-2 bg-[#121212] border border-white/5 rounded-xl text-sm outline-none focus:border-white/20 transition-colors text-white placeholder-gray-500"
                   />
                 </div>
-                <button className="whitespace-nowrap px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm rounded-xl transition-all">
-                  Filter by Type
-                </button>
+                 <select
+                  value={historyFilter}
+                  onChange={(e) => setHistoryFilter(e.target.value)}
+                  className="px-4 py-2 bg-[#121212] border border-white/10 text-white text-sm rounded-xl outline-none focus:border-primary transition-colors cursor-pointer"
+                >
+                  <option value="all">All Types</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="audio">Audio</option>
+                  <option value="url">URL</option>
+                </select>
               </div>
               <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                 <table className="w-full whitespace-nowrap text-sm">
@@ -532,11 +668,21 @@ export function AdminDashboard() {
                             <td className="px-6 py-4 text-gray-500 text-xs">
                               {new Date(summary.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                             </td>
-                            <td className="px-6 py-4 text-right">
-                              <button className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="View Summary Details">
-                                <MoreVertical className="w-4 h-4" />
-                              </button>
-                            </td>
+                             <td className="px-6 py-4 text-right">
+                               <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                 <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="View Summary">
+                                   <Eye className="w-4 h-4" />
+                                 </button>
+                                 <button 
+                                   onClick={() => handleDeleteSummary(summary.id)}
+                                   disabled={isDeleting === summary.id}
+                                   className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50" 
+                                   title="Delete Summary"
+                                  >
+                                   <Trash2 className="w-4 h-4" />
+                                 </button>
+                               </div>
+                             </td>
                           </tr>
                         );
                       })
@@ -635,11 +781,12 @@ export function AdminDashboard() {
                   </div>
                   <div className="flex flex-col gap-1.5">
                      <label className="text-xs font-semibold text-gray-400 tracking-wider uppercase">Full Name</label>
-                     <input 
-                       type="text" 
-                       defaultValue="Administrator" 
-                       className="w-full px-4 py-2.5 bg-[#121212] border border-white/10 rounded-xl text-sm text-white focus:border-primary focus:outline-none transition-colors"
-                     />
+                      <input 
+                        type="text" 
+                        value={adminName}
+                        onChange={(e) => setAdminName(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-[#121212] border border-white/10 rounded-xl text-sm text-white focus:border-primary focus:outline-none transition-colors"
+                      />
                   </div>
                   <div className="flex flex-col gap-1.5">
                      <label className="text-xs font-semibold text-gray-400 tracking-wider uppercase">Email Address</label>
@@ -659,11 +806,19 @@ export function AdminDashboard() {
                        className="w-full px-4 py-2.5 bg-[#121212] border border-white/10 rounded-xl text-sm text-white focus:border-primary focus:outline-none transition-colors"
                      />
                   </div>
-                  <div className="pt-4">
-                     <button type="button" className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-all border border-transparent">
-                       Update Profile
-                     </button>
-                  </div>
+                   <div className="pt-4">
+                      <button 
+                        type="button" 
+                        onClick={handleUpdateProfile}
+                        disabled={isUpdatingProfile}
+                        className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-all border border-transparent disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {isUpdatingProfile ? (
+                          <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                        ) : null}
+                        {isUpdatingProfile ? 'Updating...' : 'Update Profile'}
+                      </button>
+                   </div>
                 </form>
               </div>
 
@@ -694,11 +849,16 @@ export function AdminDashboard() {
                   </div>
 
                   {/* Save button */}
-                  <div className="pt-4 flex justify-start">
-                     <button className="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-xl hover:bg-gray-200 transition-colors">
-                       Save Preferences
-                     </button>
-                  </div>
+                   <div className="pt-4 mt-6">
+                      <button 
+                        type="button" 
+                        onClick={handleSavePreferences}
+                        disabled={isUpdatingProfile}
+                        className="px-5 py-2.5 bg-white/5 text-white text-sm font-semibold rounded-xl hover:bg-white/10 transition-all border border-white/10 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {isUpdatingProfile ? 'Saving...' : 'Save Preferences'}
+                      </button>
+                   </div>
                 </div>
               </div>
 
@@ -707,6 +867,37 @@ export function AdminDashboard() {
 
         </div>
       </main>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="relative bg-[#1A1A1A] border border-white/5 w-full max-w-sm rounded-[2rem] p-8 shadow-2xl scale-in text-center">
+            <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <LogOut className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Are you sure?</h3>
+            <p className="text-gray-400 mb-8">You will be logged out of the admin session.</p>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('admin_session');
+                  window.location.href = '/admin/auth';
+                }}
+                className="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20 active:scale-95"
+              >
+                Yes, Log Out
+              </button>
+              <button 
+                onClick={() => setShowLogoutConfirm(false)}
+                className="w-full py-3 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all active:scale-95"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

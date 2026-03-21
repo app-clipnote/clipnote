@@ -18,7 +18,7 @@ export function AdminAuth() {
 
     try {
       const isValid = await validateAdminLogin(email, password);
-      
+
       if (isValid) {
         // Store admin session
         localStorage.setItem('admin_session', 'true');
@@ -39,9 +39,9 @@ export function AdminAuth() {
       <div className="hidden md:flex md:w-1/2 relative flex-col justify-between p-12 overflow-hidden bg-black text-white">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1620121692029-d088224ddc74?q=80&w=2832&auto=format&fit=crop" 
-            alt="Abstract Background" 
+          <img
+            src="https://images.unsplash.com/photo-1620121692029-d088224ddc74?q=80&w=2832&auto=format&fit=crop"
+            alt="Abstract Background"
             className="w-full h-full object-cover opacity-60 mix-blend-luminosity filter saturate-50 contrast-125"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20"></div>
@@ -85,7 +85,7 @@ export function AdminAuth() {
         </div>
 
         {/* Desktop Back Button */}
-        <button 
+        <button
           onClick={() => navigate('/')}
           className="hidden md:flex absolute top-12 right-12 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors items-center gap-2 px-4 py-2 rounded-full hover:bg-secondary"
         >
@@ -121,7 +121,7 @@ export function AdminAuth() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-3.5 bg-secondary/30 border border-border/50 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all font-medium placeholder:font-normal"
-                  placeholder="admin@clipnote.com"
+                  placeholder="enter admin email"
                   required
                 />
               </div>
