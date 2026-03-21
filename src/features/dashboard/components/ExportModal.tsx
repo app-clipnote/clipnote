@@ -106,7 +106,7 @@ export function ExportModal({ summaryId, onClose }: ExportModalProps) {
         <div className="p-6">
           <div className="mb-6">
             <h3 className="font-semibold mb-1">{summary?.title}</h3>
-            <p className="text-sm text-muted-foreground">{summary?.url}</p>
+            <p className="text-sm text-muted-foreground break-all">{summary?.url}</p>
           </div>
 
           <div className="space-y-3 mb-6">

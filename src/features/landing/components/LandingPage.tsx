@@ -22,7 +22,7 @@ import {
   Sparkles,
   Star,
   Quote,
-  Check
+  CheckCircle2
 } from 'lucide-react';
 import logoImage from 'figma:asset/93280cfc232010059111a5f16ed394e8480e436c.png';
 import { ThemeToggle } from '../../../components/shared/ThemeToggle';
@@ -595,17 +595,15 @@ export function LandingPage() {
                     'Text export only',
                     'Slower processing speed'
                   ].map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm font-medium">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-primary" strokeWidth={3} />
-                      </div>
-                      {feature}
+                    <li key={feature} className="flex items-start gap-2 text-sm font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <button 
-                  onClick={() => navigate('/auth?plan=free')}
+                  onClick={() => navigate('/auth?mode=signup&plan=free')}
                   className="w-full py-4 rounded-full border border-border font-bold hover:bg-secondary transition-all"
                 >
                   Get Started Free
@@ -637,17 +635,15 @@ export function LandingPage() {
                     'Save history',
                     'Faster processing (priority queue)'
                   ].map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm font-semibold">
-                      <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
-                        <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                      </div>
-                      {feature}
+                    <li key={feature} className="flex items-start gap-2 text-sm font-semibold">
+                      <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <button 
-                  onClick={() => navigate('/auth?plan=pro')}
+                  onClick={() => navigate('/auth?mode=signup&plan=pro')}
                   className="w-full py-4 rounded-full bg-white text-primary font-bold hover:bg-white/90 transition-all shadow-lg active:scale-95 relative z-10"
                 >
                   Upgrade to Pro
@@ -678,17 +674,15 @@ export function LandingPage() {
                     'Early access to new features',
                     'API access (optional)'
                   ].map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm font-medium">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <Check className="w-3 h-3 text-primary" strokeWidth={3} />
-                      </div>
-                      {feature}
+                    <li key={feature} className="flex items-start gap-2 text-sm font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <button 
-                  onClick={() => navigate('/auth?plan=pro-plus')}
+                  onClick={() => navigate('/auth?mode=signup&plan=pro-plus')}
                   className="w-full py-4 rounded-full bg-secondary text-foreground font-bold hover:bg-secondary/80 transition-all"
                 >
                   Go Pro+

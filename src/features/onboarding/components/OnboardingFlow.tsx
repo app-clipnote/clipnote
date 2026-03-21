@@ -19,7 +19,7 @@ export function OnboardingFlow() {
     {
       id: 'free' as const,
       name: 'Free',
-      price: '₦0',
+      price: '$0',
       description: 'For trying things out',
       features: [
         '10 video summaries/month',

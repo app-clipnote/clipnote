@@ -44,7 +44,7 @@ export function PricingModal({ onClose }: PricingModalProps) {
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-1">Free</h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold">₦0</span>
+                  <span className="text-3xl font-bold">$0</span>
                   <span className="text-xs text-muted-foreground font-bold">/mo</span>
                 </div>
               </div>

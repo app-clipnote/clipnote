@@ -10,7 +10,7 @@ import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
 import { NotFound } from './pages/NotFound';
 import { SystemAlertModal } from './components/shared/SystemAlertModal';
-import { AlertProvider } from './context/AlertContext';
+import { AlertProvider, useAlert } from './context/AlertContext';
 import { getProfile, getAuthUser } from './lib/auth';
 import { getSummaries } from './lib/summaries';
 import { getCurrentUserId } from './lib/local-storage';
@@ -48,16 +48,13 @@ export const useApp = () => {
   return context;
 };
 
-function App() {
+function AppContent() {
   const [user, setUser] = useState<User | null>(null);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [summaries, setSummaries] = useState<Summary[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-
-  // Temporary stub kept for backwards compat — real alerts use useAlert() from AlertContext
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const showAlert = (_type: 'success' | 'error' | 'warning' | 'info', _title: string, _message: string) => {};
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     // Check for admin session
@@ -123,6 +120,8 @@ function App() {
       setSummaries(summariesData);
     } catch (error) {
       console.error('Error loading user data:', error);
+      localStorage.removeItem('ai_summarizer_current_user');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -155,29 +154,35 @@ function App() {
         showAlert,
       }}
     >
-      <AlertProvider>
-        <ToastProvider>
-          <Router basename={(import.meta as any).env?.BASE_URL || '/'}>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route
-              path="/onboarding"
-              element={
-                user && (needsOnboarding || !user.plan) ? <OnboardingFlow /> : <Navigate to={user ? '/dashboard' : '/auth'} />
-              }
-            />
-            <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
-            <Route path="/admin/auth" element={isAdmin ? <Navigate to="/admin/dashboard" /> : <AdminAuth />} />
-            <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
-        </ToastProvider>
-      </AlertProvider>
+      <ToastProvider>
+        <Router basename={(import.meta as any).env?.BASE_URL || '/'}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <AuthPage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route
+            path="/onboarding"
+            element={
+              user && (needsOnboarding || !user.plan) ? <OnboardingFlow /> : <Navigate to={user ? '/dashboard' : '/auth'} />
+            }
+          />
+          <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
+          <Route path="/admin/auth" element={isAdmin ? <Navigate to="/admin/dashboard" /> : <AdminAuth />} />
+          <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+      </ToastProvider>
     </AppContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <AlertProvider>
+      <AppContent />
+    </AlertProvider>
   );
 }
 

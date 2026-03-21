@@ -66,7 +66,7 @@ export function Navbar() {
                   Log in
                 </button>
                 <button
-                  onClick={() => navigate('/auth')}
+                  onClick={() => navigate('/auth?mode=signup')}
                   className="bg-primary text-primary-foreground text-[12px] font-bold px-6 py-3 rounded-full uppercase tracking-tighter hover:bg-primary/90 transition-all shadow-md active:scale-95"
                 >
                   Sign up
@@ -131,7 +131,7 @@ export function Navbar() {
                     Log In
                   </button>
                   <button
-                    onClick={() => { navigate('/auth'); setIsOpen(false); }}
+                    onClick={() => { navigate('/auth?mode=signup'); setIsOpen(false); }}
                     className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold transition-all shadow-lg active:scale-95"
                   >
                     Get Started Free
