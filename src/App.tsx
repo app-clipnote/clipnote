@@ -167,7 +167,7 @@ function AppContent() {
             }
           />
           <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
-          <Route path="/admin/auth" element={isAdmin ? <Navigate to="/admin/dashboard" /> : <AdminAuth />} />
+          <Route path="/admin/auth" element={<AdminAuth />} />
           <Route path="/admin/dashboard" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin/auth" />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
