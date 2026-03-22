@@ -216,10 +216,10 @@ export function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-[80px] font-semibold mb-6 leading-[1.05] tracking-tight text-foreground"
+          className="text-5xl md:text-7xl lg:text-[85px] font-bold mb-6 leading-[0.95] tracking-tight text-foreground"
         >
-          Summarize videos<br />
-          in <span className="font-dancing text-primary font-normal px-2 relative inline-flex pb-2 -mb-2">seconds</span>
+          <span className="bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-primary/40">Summarize videos</span><br />
+          in <span className="font-dancing text-primary font-normal px-2 relative inline-flex pb-2 -mb-2 drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)]">seconds</span>
         </motion.h1>
         
         <motion.p 
@@ -237,7 +237,7 @@ export function LandingPage() {
           transition={{ delay: 0.3 }}
           className="max-w-3xl mx-auto relative group mb-10"
         >
-          <div className="bg-background rounded-2xl sm:rounded-full p-2 flex flex-col sm:flex-row items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/60 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] hover:border-border ring-1 ring-transparent focus-within:ring-primary/20 focus-within:border-primary/50 relative overflow-hidden min-h-[64px] sm:min-h-0">
+          <div className="bg-background/40 backdrop-blur-2xl rounded-2xl sm:rounded-full p-2 flex flex-col sm:flex-row items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/10 transition-all hover:shadow-[0_30px_60px_rgba(0,0,0,0.2)] hover:border-border/40 ring-1 ring-transparent focus-within:ring-primary/20 focus-within:border-primary/50 relative overflow-hidden min-h-[64px] sm:min-h-0">
             {/* Input Field */}
             <div className="flex-1 w-full flex items-center px-6 py-2">
               <i className="ri-youtube-fill text-red-500 text-2xl mr-4 opacity-80" />

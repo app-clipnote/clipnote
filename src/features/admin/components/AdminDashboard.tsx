@@ -49,10 +49,18 @@ export function AdminDashboard() {
     setSummaries(allSummaries);
 
     try {
-      const adminDoc = await getDoc(doc(db, "admins", "main_admin"));
+      const storedUid = localStorage.getItem('admin_uid');
+      const adminDoc = await getDoc(doc(db, "admins", storedUid || "main_admin"));
       if (adminDoc.exists()) {
         if (adminDoc.data().avatar_url) setAdminAvatar(adminDoc.data().avatar_url);
         if (adminDoc.data().name) setAdminName(adminDoc.data().name);
+      } else if (!storedUid) {
+        // Fallback for when we don't have UID yet
+        const legacyDoc = await getDoc(doc(db, "admins", "main_admin"));
+        if (legacyDoc.exists()) {
+          if (legacyDoc.data().avatar_url) setAdminAvatar(legacyDoc.data().avatar_url);
+          if (legacyDoc.data().name) setAdminName(legacyDoc.data().name);
+        }
       }
     } catch (e) {
       console.error("Failed to load admin profile:", e);
@@ -69,7 +77,8 @@ export function AdminDashboard() {
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
       
-      await setDoc(doc(db, "admins", "main_admin"), { avatar_url: url }, { merge: true });
+      const storedUid = localStorage.getItem('admin_uid');
+      await setDoc(doc(db, "admins", storedUid || "main_admin"), { avatar_url: url }, { merge: true });
       setAdminAvatar(url);
     } catch (error) {
       console.error("Avatar upload failed:", error);
@@ -85,7 +94,8 @@ export function AdminDashboard() {
     e.preventDefault();
     try {
       setIsUpdatingProfile(true);
-      await setDoc(doc(db, "admins", "main_admin"), { 
+      const storedUid = localStorage.getItem('admin_uid');
+      await setDoc(doc(db, "admins", storedUid || "main_admin"), { 
         name: adminName,
         updated_at: new Date().toISOString()
       }, { merge: true });
@@ -101,7 +111,8 @@ export function AdminDashboard() {
   const handleSavePreferences = async () => {
     try {
       setIsUpdatingProfile(true);
-      await setDoc(doc(db, "admins", "main_admin"), { 
+      const storedUid = localStorage.getItem('admin_uid');
+      await setDoc(doc(db, "admins", storedUid || "main_admin"), { 
         preferences: {
           email_notifications: true,
           security_alerts: true,
@@ -573,17 +584,17 @@ export function AdminDashboard() {
                               {new Date(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                             </td>
                              <td className="px-6 py-4 text-right">
-                               <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                 <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="View User Details">
+                               <div className="flex items-center justify-end gap-2">
+                                 <button className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" title="View User Details">
                                    <Eye className="w-4 h-4" />
                                  </button>
-                                 <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="Edit User">
+                                 <button className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" title="Edit User">
                                    <Settings className="w-4 h-4" />
                                  </button>
                                  <button 
                                    onClick={() => handleDeleteUser(user.id)}
                                    disabled={isDeleting === user.id}
-                                   className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50" 
+                                   className="p-2.5 bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all border border-red-500/10 active:scale-95 disabled:opacity-50" 
                                    title="Delete User"
                                   >
                                    <Trash2 className="w-4 h-4" />
@@ -669,14 +680,14 @@ export function AdminDashboard() {
                               {new Date(summary.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                             </td>
                              <td className="px-6 py-4 text-right">
-                               <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                 <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="View Summary">
+                               <div className="flex items-center justify-end gap-2">
+                                 <button className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" title="View Summary">
                                    <Eye className="w-4 h-4" />
                                  </button>
                                  <button 
                                    onClick={() => handleDeleteSummary(summary.id)}
                                    disabled={isDeleting === summary.id}
-                                   className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50" 
+                                   className="p-2.5 bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all border border-red-500/10 active:scale-95 disabled:opacity-50" 
                                    title="Delete Summary"
                                   >
                                    <Trash2 className="w-4 h-4" />

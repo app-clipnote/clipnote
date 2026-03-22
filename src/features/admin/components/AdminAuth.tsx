@@ -17,10 +17,15 @@ export function AdminAuth() {
     setIsLoading(true);
 
     try {
-      const isValid = await validateAdminLogin(email, password);
-
-      if (isValid) {
-        // Store admin session
+      const result = await validateAdminLogin(email, password);
+      
+      if (typeof result === 'string') {
+        // Store admin session and UID
+        localStorage.setItem('admin_session', 'true');
+        localStorage.setItem('admin_uid', result);
+        navigate('/admin/dashboard');
+      } else if (result === true) {
+        // Legacy fallback
         localStorage.setItem('admin_session', 'true');
         navigate('/admin/dashboard');
       } else {

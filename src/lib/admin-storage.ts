@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import type { Profile as User, Summary } from '../types';
 
-export async function validateAdminLogin(email: string, password: string): Promise<boolean> {
+export async function validateAdminLogin(email: string, password: string): Promise<boolean | string> {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -11,7 +11,7 @@ export async function validateAdminLogin(email: string, password: string): Promi
     const adminDoc = await getDoc(doc(db, "admins", user.uid));
     
     if (adminDoc.exists() || email === 'admin@clipnote.ai' || email === 'admin@clipnote.com') {
-      return true;
+      return user.uid;
     }
     return false;
   } catch (e) {
