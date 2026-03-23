@@ -34,6 +34,13 @@ export function AdminDashboard() {
   const [userFilter, setUserFilter] = useState('all');
   const [historyFilter, setHistoryFilter] = useState('all');
 
+  // Modal States
+  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+  const [selectedSummary, setSelectedSummary] = useState<Summary | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [viewType, setViewType] = useState<'user' | 'summary' | null>(null);
+
   useEffect(() => {
     localStorage.setItem('admin_active_tab', activeTab);
   }, [activeTab]);
@@ -50,16 +57,27 @@ export function AdminDashboard() {
 
     try {
       const storedUid = localStorage.getItem('admin_uid');
-      const adminDoc = await getDoc(doc(db, "admins", storedUid || "main_admin"));
+      const docRef = doc(db, "admins", storedUid || "main_admin");
+      const adminDoc = await getDoc(docRef);
+      
       if (adminDoc.exists()) {
-        if (adminDoc.data().avatar_url) setAdminAvatar(adminDoc.data().avatar_url);
-        if (adminDoc.data().name) setAdminName(adminDoc.data().name);
-      } else if (!storedUid) {
-        // Fallback for when we don't have UID yet
+        const data = adminDoc.data();
+        if (data.avatar_url) setAdminAvatar(data.avatar_url);
+        if (data.name) setAdminName(data.name);
+      } else if (storedUid) {
+        // Initialize admin document if it doesn't exist
+        await setDoc(docRef, {
+          name: adminName,
+          avatar_url: adminAvatar,
+          created_at: new Date().toISOString()
+        });
+      } else {
+        // Fallback for legacy
         const legacyDoc = await getDoc(doc(db, "admins", "main_admin"));
         if (legacyDoc.exists()) {
-          if (legacyDoc.data().avatar_url) setAdminAvatar(legacyDoc.data().avatar_url);
-          if (legacyDoc.data().name) setAdminName(legacyDoc.data().name);
+          const data = legacyDoc.data();
+          if (data.avatar_url) setAdminAvatar(data.avatar_url);
+          if (data.name) setAdminName(data.name);
         }
       }
     } catch (e) {
@@ -130,7 +148,7 @@ export function AdminDashboard() {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (!confirm("Are you sure you want to delete this user? All their summaries will remain but their account will be removed.")) return;
+    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) return;
     try {
       setIsDeleting(userId);
       await deleteDoc(doc(db, "users", userId));
@@ -141,6 +159,26 @@ export function AdminDashboard() {
       alert("Failed to delete user.");
     } finally {
       setIsDeleting(null);
+    }
+  };
+
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedUser) return;
+    try {
+      setIsUpdatingProfile(true);
+      await setDoc(doc(db, "users", selectedUser.id), {
+        name: selectedUser.name,
+        plan: selectedUser.plan
+      }, { merge: true });
+      setUsers(users.map(u => u.id === selectedUser.id ? selectedUser : u));
+      setIsEditModalOpen(false);
+      alert("User updated successfully!");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to update user.");
+    } finally {
+      setIsUpdatingProfile(false);
     }
   };
 
@@ -585,10 +623,18 @@ export function AdminDashboard() {
                             </td>
                              <td className="px-6 py-4 text-right">
                                <div className="flex items-center justify-end gap-2">
-                                 <button className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" title="View User Details">
+                                 <button 
+                                   onClick={() => { setSelectedUser(user); setViewType('user'); setIsViewModalOpen(true); }}
+                                   className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" 
+                                   title="View User Details"
+                                 >
                                    <Eye className="w-4 h-4" />
                                  </button>
-                                 <button className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" title="Edit User">
+                                 <button 
+                                   onClick={() => { setSelectedUser(user); setIsEditModalOpen(true); }}
+                                   className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" 
+                                   title="Edit User"
+                                 >
                                    <Settings className="w-4 h-4" />
                                  </button>
                                  <button 
@@ -681,7 +727,11 @@ export function AdminDashboard() {
                             </td>
                              <td className="px-6 py-4 text-right">
                                <div className="flex items-center justify-end gap-2">
-                                 <button className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" title="View Summary">
+                                 <button 
+                                   onClick={() => { setSelectedSummary(summary); setViewType('summary'); setIsViewModalOpen(true); }}
+                                   className="p-2.5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-white/5 active:scale-95" 
+                                   title="View Summary"
+                                 >
                                    <Eye className="w-4 h-4" />
                                  </button>
                                  <button 
@@ -878,6 +928,125 @@ export function AdminDashboard() {
 
         </div>
       </main>
+
+      {/* View Detail Modal */}
+      {isViewModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsViewModalOpen(false)} />
+          <div className="relative bg-[#1A1A1A] border border-white/5 w-full max-w-2xl rounded-[2rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <h3 className="text-xl font-bold text-white mb-6">Details</h3>
+            
+            {viewType === 'user' && selectedUser && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-gray-500 mb-1">Name</p>
+                    <p className="text-white font-medium">{selectedUser.name}</p>
+                  </div>
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-gray-500 mb-1">Email</p>
+                    <p className="text-white font-medium">{selectedUser.email}</p>
+                  </div>
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-gray-500 mb-1">Plan</p>
+                    <span className="text-primary font-bold uppercase text-xs">{selectedUser.plan}</span>
+                  </div>
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-gray-500 mb-1">User ID</p>
+                    <p className="text-gray-400 text-[10px] break-all">{selectedUser.id}</p>
+                  </div>
+                </div>
+                <div className="bg-white/5 p-4 rounded-xl">
+                   <p className="text-xs text-gray-500 mb-1">Recent Activity</p>
+                   <p className="text-gray-400 text-sm">Joined {new Date(selectedUser.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            )}
+
+            {viewType === 'summary' && selectedSummary && (
+              <div className="space-y-4">
+                <div className="bg-white/5 p-4 rounded-xl">
+                  <p className="text-xs text-gray-500 mb-1">Summary Title</p>
+                  <p className="text-white font-medium">{selectedSummary.title}</p>
+                </div>
+                <div className="bg-white/5 p-4 rounded-xl">
+                  <p className="text-xs text-gray-500 mb-1">Content Preview</p>
+                  <p className="text-gray-300 text-sm leading-relaxed">{selectedSummary.summary}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-gray-500 mb-1">Source Type</p>
+                    <p className="text-white font-medium capitalize">{selectedSummary.type}</p>
+                  </div>
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-gray-500 mb-1">Created At</p>
+                    <p className="text-white font-medium">{new Date(selectedSummary.created_at).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-8">
+              <button 
+                onClick={() => setIsViewModalOpen(false)}
+                className="w-full py-3 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Modal */}
+      {isEditModalOpen && selectedUser && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsEditModalOpen(false)} />
+          <div className="relative bg-[#1A1A1A] border border-white/5 w-full max-w-md rounded-[2rem] p-8 shadow-2xl">
+            <h3 className="text-xl font-bold text-white mb-6">Edit User</h3>
+            <form onSubmit={handleUpdateUser} className="space-y-4">
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Full Name</label>
+                <input 
+                  type="text" 
+                  value={selectedUser.name}
+                  onChange={(e) => setSelectedUser({...selectedUser, name: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-[#121212] border border-white/10 rounded-xl text-sm text-white focus:border-primary outline-none transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Subscription Plan</label>
+                <select 
+                  value={selectedUser.plan}
+                  onChange={(e) => setSelectedUser({...selectedUser, plan: e.target.value as any})}
+                  className="w-full px-4 py-2.5 bg-[#121212] border border-white/10 rounded-xl text-sm text-white focus:border-primary outline-none transition-all"
+                >
+                  <option value="free">Free</option>
+                  <option value="pro">Pro</option>
+                  <option value="pro-plus">Pro+</option>
+                  <option value="enterprise">Enterprise</option>
+                </select>
+              </div>
+              <div className="pt-4 flex flex-col gap-3">
+                <button 
+                  type="submit"
+                  disabled={isUpdatingProfile}
+                  className="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50"
+                >
+                  {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="w-full py-3 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (

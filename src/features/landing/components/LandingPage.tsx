@@ -218,8 +218,8 @@ export function LandingPage() {
           transition={{ delay: 0.1 }}
           className="text-5xl md:text-7xl lg:text-[85px] font-bold mb-6 leading-[0.95] tracking-tight text-foreground"
         >
-          <span className="bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-primary/40">Summarize videos</span><br />
-          in <span className="font-dancing text-primary font-normal px-2 relative inline-flex pb-2 -mb-2 drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)]">seconds</span>
+          <span className="bg-clip-text text-transparent bg-gradient-to-br from-foreground via-foreground to-primary/60 dark:from-white dark:via-white dark:to-primary/40">Summarize videos</span><br />
+          in <span className="font-dancing text-primary font-normal px-2 relative inline-flex pb-2 -mb-2 drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)] dark:drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">seconds</span>
         </motion.h1>
         
         <motion.p 
