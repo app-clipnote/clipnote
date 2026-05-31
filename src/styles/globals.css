@@ -5,11 +5,11 @@
 
 :root {
   --font-size: 16px;
-  --background: #F7F7F7;
+  --background: #fef9fe;
   --foreground: #1a1a1a;
-  --card: #ffffff;
+  --card: #f8f4ff;
   --card-foreground: #1a1a1a;
-  --popover: #ffffff;
+  --popover: #f8f4ff;
   --popover-foreground: #1a1a1a;
   --primary: #8B5CF6;
   --primary-foreground: #ffffff;
